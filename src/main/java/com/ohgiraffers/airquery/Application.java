@@ -1,4 +1,3 @@
-
 package com.ohgiraffers.airquery;
 
 import java.util.Scanner;
@@ -20,7 +19,9 @@ public class Application {
             System.out.println("3. 항공편");
             System.out.println("4. 예약");
             System.out.println("5. 결제");
-            System.out.println("0. 프로그램 종료");
+            System.out.println("6. 수하물");
+            System.out.println("7. 좌석");
+            System.out.println("9. 프로그램 종료");
             System.out.println("=================================");
             System.out.print("메뉴 선택 : ");
 
@@ -48,13 +49,22 @@ public class Application {
                     paymentMenu(sc);
                     break;
 
-                case "0":
+                case "6":
+                    baggageMenu(sc);
+                    break;
+
+                case "7":
+                    seatMenu(sc);
+                    break;
+
+                case "9":
                     System.out.println("프로그램을 종료합니다.");
                     sc.close();
                     return;
 
                 default:
-                    System.out.println("잘못된 번호입니다. 다시 입력해주세요.");
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
             }
         }
     }
@@ -84,7 +94,8 @@ public class Application {
                     return;
 
                 default:
-                    System.out.println("잘못된 번호입니다.");
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
             }
         }
     }
@@ -129,7 +140,8 @@ public class Application {
                     return;
 
                 default:
-                    System.out.println("잘못된 번호입니다.");
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
             }
         }
     }
@@ -159,7 +171,8 @@ public class Application {
                     return;
 
                 default:
-                    System.out.println("잘못된 번호입니다.");
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
             }
         }
     }
@@ -189,7 +202,8 @@ public class Application {
                     return;
 
                 default:
-                    System.out.println("잘못된 번호입니다.");
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
             }
         }
     }
@@ -219,7 +233,70 @@ public class Application {
                     return;
 
                 default:
-                    System.out.println("잘못된 번호입니다.");
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
+            }
+        }
+    }
+
+
+    // ================= 수하물 =================
+
+    public static void baggageMenu(Scanner sc) {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("===== 수하물 메뉴 =====");
+            System.out.println("1. 수하물 기능");
+            System.out.println("9. 메인 메뉴로 돌아가기");
+            System.out.print("메뉴 선택 : ");
+
+            String input = sc.nextLine();
+
+            switch (input) {
+
+                case "1":
+                    System.out.println("수하물 기능 구현 예정");
+                    break;
+
+                case "9":
+                    return;
+
+                default:
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
+            }
+        }
+    }
+
+
+    // ================= 좌석 =================
+
+    public static void seatMenu(Scanner sc) {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("===== 좌석 메뉴 =====");
+            System.out.println("1. 좌석 기능");
+            System.out.println("9. 메인 메뉴로 돌아가기");
+            System.out.print("메뉴 선택 : ");
+
+            String input = sc.nextLine();
+
+            switch (input) {
+
+                case "1":
+                    System.out.println("좌석 기능 구현 예정");
+                    break;
+
+                case "9":
+                    return;
+
+                default:
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
             }
         }
     }
