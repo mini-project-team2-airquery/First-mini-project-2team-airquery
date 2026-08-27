@@ -23,4 +23,15 @@ public class FlightService {
 
         return flightList;
     }
+
+    public List<FlightDTO> selectByAirline(String airlineName) {
+
+        Connection con = getConnection();
+
+        List<FlightDTO> flightList = flightDAO.selectByAirline(con, airlineName);
+
+        close(con);
+
+        return flightList;
+    }
 }
