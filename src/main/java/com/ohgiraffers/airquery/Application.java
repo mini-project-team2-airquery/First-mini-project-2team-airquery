@@ -1,5 +1,7 @@
 package com.ohgiraffers.airquery;
 
+import com.ohgiraffers.airquery.reservation.view.ReservationMenu;
+
 import java.util.Scanner;
 
 public class Application {
@@ -182,30 +184,9 @@ public class Application {
 
     public static void reservationMenu(Scanner sc) {
 
-        while (true) {
+        ReservationMenu reservationMenu = new ReservationMenu();
 
-            System.out.println();
-            System.out.println("===== 예약 메뉴 =====");
-            System.out.println("1. 예약 기능");
-            System.out.println("9. 메인 메뉴로 돌아가기");
-            System.out.print("메뉴 선택 : ");
-
-            String input = sc.nextLine();
-
-            switch (input) {
-
-                case "1":
-                    System.out.println("예약 기능 구현 예정");
-                    break;
-
-                case "9":
-                    return;
-
-                default:
-                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
-                    break;
-            }
-        }
+        reservationMenu.displayMenu();
     }
 
 
