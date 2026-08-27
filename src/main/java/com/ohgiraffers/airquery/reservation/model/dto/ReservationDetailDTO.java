@@ -1,6 +1,8 @@
 package com.ohgiraffers.airquery.reservation.model.dto;
 
+import com.ohgiraffers.airquery.baggage.BaggageDTO;
 import com.ohgiraffers.airquery.payment.model.dto.PaymentDTO;
+import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +29,11 @@ public class ReservationDetailDTO {
     private int seatCode;           // 좌석번호
     private String seatId;          // 좌석식별번호
     private String flightClass;     // 좌석등급
+    private int additionalAmount;   // 추가금액
+
+    // 수하물
+    private int baggageCode;        // 수하물 번호
+    private double baggageWeight;   // 수하물 무게
 
     public int getReservationCode() {
         return reservationCode;
@@ -164,14 +171,8 @@ public class ReservationDetailDTO {
         this.baggageWeight = baggageWeight;
     }
 
-    private int additionalAmount;   // 추가금액
-
-    // 수하물
-    private int baggageCode;        // 수하물 번호
-    private double baggageWeight;   // 수하물 무게
-
     // 예매 상세 정보 DTO 조립
-    public static ReservationDetailDTO of(ReservationDTO r, PaymentDTO p /* SeatDTO s, BaggageDTO b*/) {
+    public static ReservationDetailDTO of(ReservationDTO r, PaymentDTO p, SeatDTO s, BaggageDTO b) {
 
         ReservationDetailDTO dto = new ReservationDetailDTO();
 
@@ -192,9 +193,19 @@ public class ReservationDetailDTO {
             dto.setPaymentUpdatedDate(p.getUpdatedAt());
         }
 
-        // if(s != null)
+         if(s != null) {
 
-        // if(b != null)
+             dto.setSeatCode(s.getSeatCode());
+             dto.setSeatId(s.getSeatId());
+             dto.setFlightClass(s.getFlightClass());
+             dto.setAdditionalAmount(s.getAdditionalAmount());
+         }
+
+         if(b != null) {
+
+             dto.setBaggageCode(b.getBaggageCode());
+             // dto.setBaggageWeight(b.getBaggageWeight()); -> 타입 변경 필요
+         }
 
         return dto;
     }

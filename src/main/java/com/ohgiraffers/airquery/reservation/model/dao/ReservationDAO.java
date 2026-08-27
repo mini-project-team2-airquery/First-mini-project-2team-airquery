@@ -109,7 +109,59 @@ public class ReservationDAO {
     }
 
     /* 예약 등록 */
+    public int insertReservation(Connection con, ReservationDTO dto) {
 
+        PreparedStatement pstmt = null;
+        int rs = 0;
+        ResultSet rset = null;
+
+        // 한 사람이 같은 항공편에 대해서 이미 생성된 예매 내역이 있는지 체크
+        String checkAvailabilityQuery = "" +
+                "SELECT * " +
+                "FROM tbl_reservation " +
+                "WHERE member_code = ? " +
+                "AND flight_code = ?" +
+                "";
+
+        // 좌석번호는 기본적으로 미선택, null이 default
+        String insertQuery = "" +
+                "INSERT INTO tbl_reservation " +
+                "(member_code, flight_code, baggage_carrying) " +
+                "VALUES (?, ?, ?)" +
+                "";
+
+        try {
+
+            // 해당 항공편에 대한 예매 가능 여부 체크
+            pstmt = con.prepareStatement(checkAvailabilityQuery);
+            pstmt.setInt(1, dto.getMemberCode());
+            pstmt.setInt(2, dto.getFlightCode());
+
+            rset = pstmt.executeQuery();
+
+            // 일단 이렇게 막아놓음
+            if(rset.next()) {
+                System.out.println("이미 예매 완료한 항공편입니다.");
+                throw new RuntimeException();
+            }
+
+            pstmt = con.prepareStatement(insertQuery);
+            pstmt.setInt(1, dto.getMemberCode());               // 회원 번호
+            pstmt.setInt(2, dto.getFlightCode());               // 항공편 선택
+            pstmt.setBoolean(3, dto.isBaggageCarrying());       // 수하물 지참 여부 선택 (True or False)
+
+            rs = pstmt.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return rs;
+    }
 
     /* 예약 취소 */
 
