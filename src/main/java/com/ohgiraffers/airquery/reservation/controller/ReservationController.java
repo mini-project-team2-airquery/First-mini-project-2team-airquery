@@ -1,7 +1,7 @@
 package com.ohgiraffers.airquery.reservation.controller;
 
-import com.ohgiraffers.airquery.reservation.model.dao.ReservationDAO;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
+import com.ohgiraffers.airquery.reservation.model.dto.ReservationDetailDTO;
 import com.ohgiraffers.airquery.reservation.model.service.ReservationService;
 
 import java.util.List;
@@ -15,8 +15,8 @@ public class ReservationController {
         return reservationService.selectAllReservations(memberCode);
     }
 
-    public ReservationDTO getReservationDetail(int reservationCode, int memberCode) {
+    public ReservationDetailDTO getReservationDetail(int reservationCode, int memberCode) {
 
-        return reservationService.findById(reservationCode, memberCode);
+        return reservationService.findReservationDetail(reservationCode, memberCode);
     }
 }

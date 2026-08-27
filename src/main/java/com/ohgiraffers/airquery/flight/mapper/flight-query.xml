@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+    <entry key="selectAllFlight">
+        SELECT
+            a.flight_code,
+            a.airline_code,
+            b.airline_name,
+            a.flight_departure,
+            a.flight_arrival,
+            a.flight_departure_time,
+            a.flight_arrival_time,
+            a.airplane_type,
+            a.flight_gate_number,
+            a.flight_ticket_price,
+            a.first_created_date,
+            a.last_modified_date
+        FROM
+            tbl_flight a
+        JOIN
+            tbl_airline b
+        ON
+            a.airline_code = b.airline_code
+        ORDER BY
+            a.flight_departure_time
+    </entry>
+
+    <entry key="selectByAirline">
+        SELECT
+            a.flight_code,
+            b.airline_name,
+            a.flight_departure,
+            a.flight_arrival,
+            a.flight_departure_time,
+            a.flight_arrival_time,
+            a.airplane_type,
+            a.flight_gate_number,
+            a.flight_ticket_price,
+            a.first_created_date,
+            a.last_modified_date
+        FROM
+            tbl_flight a
+        JOIN
+            tbl_airline b
+        ON
+            a.airline_code = b.airline_code
+        WHERE
+            b.airline_name = ?
+    </entry>
+
+    <entry key="insertFlight">
+        INSERT INTO tbl_flight
+        (
+            airline_code,
+            flight_departure,
+            flight_arrival,
+            flight_departure_time,
+            flight_arrival_time,
+            airplane_type,
+            flight_gate_number,
+            flight_ticket_price
+        )
+        VALUES
+        (
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?,
+            ?
+        )
+    </entry>
+    
+    <entry key="updateFlightInfo">
+        UPDATE tbl_flight
+        SET
+            flight_departure = ?,
+            flight_arrival = ?,
+            airplane_type = ?,
+            flight_gate_number = ?
+        WHERE
+            flight_code = ?
+    </entry>
+
+    <entry key="updateFlightSchedule">
+        UPDATE tbl_flight
+        SET
+            flight_departure_time = ?,
+            flight_arrival_time = ?
+        WHERE
+            flight_code = ?
+    </entry>
+
+    <entry key="updateFlightPrice">
+        UPDATE tbl_flight
+        SET
+            flight_ticket_price = ?
+        WHERE
+            flight_code = ?
+    </entry>
+
+    <entry key="deleteFlight">
+        DELETE
+        FROM tbl_flight
+        WHERE flight_code = ?
+    </entry>
+</properties>
