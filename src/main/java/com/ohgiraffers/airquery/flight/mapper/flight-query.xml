@@ -29,6 +29,7 @@
     <entry key="selectByAirline">
         SELECT
             a.flight_code,
+            a.airline_code,
             b.airline_name,
             a.flight_departure,
             a.flight_arrival,
@@ -47,6 +48,8 @@
             a.airline_code = b.airline_code
         WHERE
             b.airline_name = ?
+        ORDER BY
+            a.flight_departure_time
     </entry>
 
     <entry key="insertFlight">

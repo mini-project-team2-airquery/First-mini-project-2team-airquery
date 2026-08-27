@@ -2,6 +2,7 @@ package com.ohgiraffers.airquery;
 
 import com.ohgiraffers.airquery.member.*;
 import com.ohgiraffers.airquery.reservation.view.ReservationMenu;
+import com.ohgiraffers.airquery.seat.view.SeatMenu;
 
 
 import java.util.Scanner;
@@ -303,6 +304,13 @@ public class Application {
                 case "9":
                     return;
 
+                case "1":
+                    System.out.println("항공편 기능 구현 예정");
+                    break;
+
+                case "9":
+                    return;
+
                 default:
                     System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
                     break;
@@ -387,29 +395,8 @@ public class Application {
 
     public static void seatMenu(Scanner sc) {
 
-        while (true) {
+        SeatMenu seatMenu = new SeatMenu();
 
-            System.out.println();
-            System.out.println("===== 좌석 메뉴 =====");
-            System.out.println("1. 좌석 기능");
-            System.out.println("9. 메인 메뉴로 돌아가기");
-            System.out.print("메뉴 선택 : ");
-
-            String input = sc.nextLine();
-
-            switch (input) {
-
-                case "1":
-                    System.out.println("좌석 기능 구현 예정");
-                    break;
-
-                case "9":
-                    return;
-
-                default:
-                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
-                    break;
-            }
-        }
+        seatMenu.displayMenu(sc);
     }
 }

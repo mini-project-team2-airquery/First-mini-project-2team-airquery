@@ -12,4 +12,8 @@ public class FlightController {
     public List<FlightDTO> selectAllFlight() {
         return flightService.selectAllFlight();
     }
+
+    public List<FlightDTO> selectByAirline(String airlineName) {
+        return flightService.selectByAirline(airlineName);
+    }
 }
