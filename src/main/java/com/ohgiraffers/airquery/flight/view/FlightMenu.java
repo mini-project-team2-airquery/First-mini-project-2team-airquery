@@ -88,7 +88,7 @@ public class FlightMenu {
         List<FlightDTO> flightList = flightController.selectByAirline(airlineName);
 
         System.out.println();
-        System.out.println("================================ 항공편 전체 목록 ================================");
+        System.out.println("================================ 항공사별 항공편 목록 ================================");
 
         if (flightList == null) {
             System.out.println("항공편 조회 중 오류가 발생했습니다.");
