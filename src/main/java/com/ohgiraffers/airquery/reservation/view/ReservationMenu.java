@@ -2,17 +2,17 @@ package com.ohgiraffers.airquery.reservation.view;
 
 import com.ohgiraffers.airquery.reservation.controller.ReservationController;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
+import com.ohgiraffers.airquery.reservation.model.dto.ReservationDetailDTO;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class ReservationMenu {
 
-    private ReservationController reservationController = new ReservationController();
+    private final ReservationController reservationController = new ReservationController();
+    private final ResultView resultView = new ResultView();
 
-    public void displayMenu() {
-
-        Scanner sc = new Scanner(System.in);
+    public void displayMenu(Scanner sc) {
 
         System.out.println("=================== 예매 관리 화면 ===================");
 
@@ -41,20 +41,28 @@ public class ReservationMenu {
                         continue;
                     }
 
-                    reservationList.forEach(System.out::println);
+                    resultView.printReservationList(reservationList);
 
                     break;
                 case 2:
                     System.out.println("============== 나의 예매 내역 ==============");
-                    reservationController.getAllReservations(memberCode)
-                            .stream()
-                            .forEach(System.out::println);
+
+                    List<ReservationDTO> list =
+                            reservationController.getAllReservations(memberCode);
+
+                    if(list.isEmpty()) {
+                        System.out.println("현재 예매 내역이 존재하지 않습니다.");
+                        continue;
+                    }
+
+                    resultView.printReservationList(list);
 
                     System.out.println("위 예매 내역 중 상세 정보를 조회할 예매 번호를 선택해주세요: ");
+
                     int selectedReservationCode = sc.nextInt();
                     sc.nextLine();
 
-                    ReservationDTO reservation =
+                    ReservationDetailDTO reservation =
                             reservationController.getReservationDetail(selectedReservationCode, memberCode);
 
                     if(reservation == null) {
@@ -62,10 +70,7 @@ public class ReservationMenu {
                         continue;
                     }
 
-                    // 현재는 순수 예매 정보만 출력
-                    // 추후에 결제 정보 및 좌석 정보, 수하물 위탁 여부를 고려하여 전체 상세 내역을 출력할 예정
-                    System.out.println("============= 선택한 예매의 상세 내역 =============");
-                    System.out.println(reservation);
+                    resultView.printReservationDetail(reservation);
                     break;
                 case 9:
                     return;

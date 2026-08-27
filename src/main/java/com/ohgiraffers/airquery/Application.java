@@ -166,7 +166,7 @@ public class Application {
 
         ReservationMenu reservationMenu = new ReservationMenu();
 
-        reservationMenu.displayMenu();
+        reservationMenu.displayMenu(sc);
     }
 
 
