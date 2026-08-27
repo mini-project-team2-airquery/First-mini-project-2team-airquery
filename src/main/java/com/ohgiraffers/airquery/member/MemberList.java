@@ -7,9 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Scanner;
 
-public class CustomerList {
+public class MemberList {
 
-    public static void customerList(Scanner sc) {
+    public static void memberList(Scanner sc) {
 
         Connection con = JDBCTemplate.getConnection();
         PreparedStatement pstmt = null;
