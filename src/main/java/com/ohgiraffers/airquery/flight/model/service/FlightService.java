@@ -6,8 +6,7 @@ import com.ohgiraffers.airquery.flight.model.dto.FlightDTO;
 import java.sql.Connection;
 import java.util.List;
 
-import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
-import static com.ohgiraffers.airquery.common.JDBCTemplate.getConnection;
+import static com.ohgiraffers.airquery.common.JDBCTemplate.*;
 
 public class FlightService {
 
@@ -33,5 +32,34 @@ public class FlightService {
         close(con);
 
         return flightList;
+    }
+
+    public boolean insertFlight(FlightDTO flight) {
+
+        Connection con = getConnection();
+
+        int result = flightDAO.insertFlight(con, flight);
+
+        if (result > 0) {
+
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result > 0;
+    }
+
+    public boolean existsAirline(int airlineCode) {
+
+        Connection con = getConnection();
+
+        boolean exists = flightDAO.existsAirline(con, airlineCode);
+
+        close(con);
+
+        return exists;
     }
 }

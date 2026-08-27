@@ -5,10 +5,7 @@ import com.ohgiraffers.airquery.flight.model.dto.FlightDTO;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,5 +127,65 @@ public class FlightDAO {
         }
 
         return flightList;
+    }
+    public int insertFlight(Connection con, FlightDTO flight) {
+
+        PreparedStatement pstmt = null;
+
+        int result = 0;
+
+        System.out.println("추가할 항공편 정보: " + flight);
+
+        String query = prop.getProperty("insertFlight");
+
+        try {
+
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, flight.getAirlineCode());
+            pstmt.setString(2, flight.getDeparture());
+            pstmt.setString(3, flight.getArrival());
+            pstmt.setTimestamp(4, Timestamp.valueOf(flight.getDepartureTime()));
+            pstmt.setTimestamp(5, Timestamp.valueOf(flight.getArrivalTime()));
+            pstmt.setString(6, flight.getAirplaneType());
+            pstmt.setString(7, flight.getGateNumber());
+            pstmt.setInt(8, flight.getTicketPrice());
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public boolean existsAirline(Connection con, int airlineCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+
+        boolean exists = false;
+
+        String query = prop.getProperty("existsAirline");
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, airlineCode);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                exists = rset.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(rset);
+            JDBCTemplate.close(pstmt);
+        }
+
+        return exists;
     }
 }
