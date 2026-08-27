@@ -55,8 +55,8 @@ public class ReservationDAO {
                 reservation.setFlightCode(rs.getInt("flight_code"));
                 reservation.setSeatCode(rs.getInt("seat_code"));
                 reservation.setBaggageCarrying(rs.getBoolean("baggage_carrying"));
-                //reservation.setCreatedAt(rs.getObject("first_created_date", LocalDateTime.class));
-                //reservation.setUpdatedAt(rs.getObject("last_modified_date", LocalDateTime.class));
+                reservation.setCreatedAt(rs.getObject("first_created_date", LocalDateTime.class));
+                reservation.setUpdatedAt(rs.getObject("last_modified_date", LocalDateTime.class));
 
                 reservationList.add(reservation);
             }
@@ -109,6 +109,7 @@ public class ReservationDAO {
     }
 
     /* 예약 등록 */
+
 
     /* 예약 취소 */
 
