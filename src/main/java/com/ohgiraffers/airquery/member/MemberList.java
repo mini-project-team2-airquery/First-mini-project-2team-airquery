@@ -16,35 +16,20 @@ public class CustomerList {
         ResultSet rset = null;
 
         try {
-
             System.out.println();
             System.out.println("===== 고객목록 조회 =====");
 
             String query =
-                    "SELECT " +
-                            "member_code, " +
-                            "member_name, " +
-                            "member_id, " +
-                            "member_auth, " +
-                            "member_phone, " +
-                            "member_dob, " +
-                            "member_address, " +
-                            "member_country, " +
-                            "member_gender, " +
-                            "passport_number " +
-                            "FROM tbl_member " +
-                            "ORDER BY member_code";
+                    "SELECT member_code, member_name, member_id, member_auth, " +
+                            "member_phone, member_dob, member_address, member_country, " +
+                            "member_gender, passport_number FROM tbl_member ORDER BY member_code";
 
             pstmt = con.prepareStatement(query);
-
             rset = pstmt.executeQuery();
-
             boolean hasMember = false;
 
             while (rset.next()) {
-
                 hasMember = true;
-
                 System.out.println("---------------------------------");
                 System.out.println("회원번호 : " + rset.getInt("member_code"));
                 System.out.println("이름     : " + rset.getString("member_name"));
@@ -59,21 +44,14 @@ public class CustomerList {
             }
 
             if (!hasMember) {
-
                 System.out.println("등록된 고객이 없습니다.");
-
             } else {
-
                 System.out.println("---------------------------------");
                 System.out.println("고객목록 조회가 완료되었습니다.");
             }
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
         } finally {
-
             JDBCTemplate.close(rset);
             JDBCTemplate.close(pstmt);
             JDBCTemplate.close(con);
