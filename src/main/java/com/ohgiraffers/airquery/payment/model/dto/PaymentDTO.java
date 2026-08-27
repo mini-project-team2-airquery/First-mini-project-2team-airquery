@@ -1,8 +1,8 @@
-package com.ohgiraffers.airquery.payment;
+package com.ohgiraffers.airquery.payment.model.dto;
 
 import java.time.LocalDateTime;
 
-public class Payment {
+public class PaymentDTO {
 
     private int paymentCode;            // 결제번호
     private int reservationCode;        // 예매번호
@@ -12,7 +12,7 @@ public class Payment {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    Payment() {
+    public PaymentDTO() {
         refundStatus = false;   // 환불여부의 default value
     }
 
