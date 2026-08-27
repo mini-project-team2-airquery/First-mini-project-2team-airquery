@@ -215,7 +215,7 @@ public class Application {
 
                 case "1":
 
-                    CustomerList.customerList(sc);
+                    MemberList.memberList(sc);
 
                     break;
 
