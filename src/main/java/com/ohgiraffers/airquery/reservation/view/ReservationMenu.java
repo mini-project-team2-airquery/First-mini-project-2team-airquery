@@ -1,16 +1,25 @@
 package com.ohgiraffers.airquery.reservation.view;
 
+import com.ohgiraffers.airquery.flight.controller.FlightController;
+import com.ohgiraffers.airquery.flight.view.FlightMenu;
 import com.ohgiraffers.airquery.reservation.controller.ReservationController;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDetailDTO;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
+import static java.lang.Character.toUpperCase;
 
 public class ReservationMenu {
 
     private final ReservationController reservationController = new ReservationController();
     private final ResultView resultView = new ResultView();
+
+    //private final FlightMenu flightMenu = new FlightMenu();
+    private final FlightController flightController = new FlightController();
 
     public void displayMenu(Scanner sc) {
 
@@ -26,6 +35,7 @@ public class ReservationMenu {
 
             System.out.println("1. 예매 목록 조회");
             System.out.println("2. 예매 상세 조회");
+            System.out.println("3. 예매 등록");
             System.out.println("9. 메인 화면으로 돌아가기");
 
             int choice = sc.nextInt();
@@ -71,6 +81,32 @@ public class ReservationMenu {
                     }
 
                     resultView.printReservationDetail(reservation);
+                    break;
+                case 3:
+                    System.out.println("============== 항공편 리스트 =============");
+                    System.out.println(flightController.selectAllFlight());
+                    //flightMenu.selectAllFlight();
+
+                    int selectedFlightCode;
+                    boolean selectedBaggageCarrying = false;
+
+                    System.out.println("예매를 원하시는 항공편을 선택해주세요: ");
+                    selectedFlightCode = sc.nextInt();
+                    sc.nextLine();
+
+                    System.out.println("수하물 지참 여부를 입력해주세요(Y/N): ");
+                    char baggageCarrying = sc.next().charAt(0);
+
+                    if (toUpperCase(baggageCarrying) == 'Y') {
+                        selectedBaggageCarrying = true;
+                    }
+
+                    Map<String, Object> requestMap = new HashMap<>();
+                    requestMap.put("memberCode", memberCode);
+                    requestMap.put("flightCode", selectedFlightCode);
+                    requestMap.put("baggageCarrying", selectedBaggageCarrying);
+
+                    reservationController.registerReservation(requestMap);
                     break;
                 case 9:
                     return;
