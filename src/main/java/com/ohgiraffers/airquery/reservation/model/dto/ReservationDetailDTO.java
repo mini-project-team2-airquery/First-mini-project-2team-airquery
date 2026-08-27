@@ -1,6 +1,6 @@
 package com.ohgiraffers.airquery.reservation.model.dto;
 
-import com.ohgiraffers.airquery.baggage.BaggageDTO;
+import com.ohgiraffers.airquery.baggage.model.dto.BaggageDTO;
 import com.ohgiraffers.airquery.payment.model.dto.PaymentDTO;
 import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
@@ -172,7 +172,7 @@ public class ReservationDetailDTO {
     }
 
     // 예매 상세 정보 DTO 조립
-    public static ReservationDetailDTO of(ReservationDTO r, PaymentDTO p, SeatDTO s, BaggageDTO b) {
+    public static <BaggageDTO> ReservationDetailDTO of(ReservationDTO r, PaymentDTO p, SeatDTO s, BaggageDTO b) {
 
         ReservationDetailDTO dto = new ReservationDetailDTO();
 
@@ -203,7 +203,7 @@ public class ReservationDetailDTO {
 
          if(b != null) {
 
-             dto.setBaggageCode(b.getBaggageCode());
+             // dto.setBaggageCode(b.getBaggageCode());
              // dto.setBaggageWeight(b.getBaggageWeight()); -> 타입 변경 필요
          }
 
