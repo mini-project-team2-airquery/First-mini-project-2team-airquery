@@ -52,7 +52,7 @@ public class FlightMenu {
         }
     }
 
-    private void selectAllFlight() {
+    public void selectAllFlight() {
         List<FlightDTO> flightList = flightController.selectAllFlight();
 
         System.out.println();
@@ -86,7 +86,7 @@ public class FlightMenu {
         }
     }
 
-    private void selectByAirline(Scanner sc) {
+    public void selectByAirline(Scanner sc) {
         System.out.print("조회할 항공사명을 입력하세요: ");
 
         String airlineName = sc.nextLine();
