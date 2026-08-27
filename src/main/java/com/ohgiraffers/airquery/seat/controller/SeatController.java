@@ -18,9 +18,28 @@ public class SeatController {
         return seatService.selectAllSeats();
     }
 
+    // 예약 가능한 좌석 목록 조회하는 메서드
+    public List<SeatDTO> getAvailableSeats() {
+
+        return seatService.selectAvailableSeats();
+    }
+
     // 특정 좌석 예약하는 메서드
     public boolean reserveSeat(int seatCode) {
 
         return seatService.reserveSeat(seatCode);
     }
+
+    // 좌석 정보 변경하는 메서드
+    public boolean updateSeat(SeatDTO seatDTO) {
+
+    return seatService.updateSeat(seatDTO);
+    }
+
 }
+//    // 좌석 정보 변경하는 메서드
+//    public boolean updateSeat(SeatDTO seat) {
+//
+//        return seatService.updateSeat(seat);
+//    }
+//}
