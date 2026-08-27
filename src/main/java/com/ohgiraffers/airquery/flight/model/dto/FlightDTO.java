@@ -1,4 +1,4 @@
-package com.ohgiraffers.airquery.flight;
+package com.ohgiraffers.airquery.flight.model.dto;
 
 import java.time.LocalDateTime;
 
@@ -6,31 +6,33 @@ public class FlightDTO {
 
     private int code;
     private int airlineCode;
+    private String airlineName;
     private String departure;
     private String arrival;
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
     private String airplaneType;
     private String gateNumber;
-    private int ticket_price;
+    private int ticketPrice;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public FlightDTO() {
     }
 
-    public FlightDTO(int code, int airlineCode, String departure, String arrival,
+    public FlightDTO(int code, int airlineCode, String airlineName, String departure, String arrival,
                      LocalDateTime departureTime, LocalDateTime arrivalTime, String airplaneType, String gateNumber,
-                     int ticket_price, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                     int ticketPrice, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.code = code;
         this.airlineCode = airlineCode;
+        this.airlineName = airlineName;
         this.departure = departure;
         this.arrival = arrival;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.airplaneType = airplaneType;
         this.gateNumber = gateNumber;
-        this.ticket_price = ticket_price;
+        this.ticketPrice = ticketPrice;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -49,6 +51,14 @@ public class FlightDTO {
 
     public void setAirlineCode(int airlineCode) {
         this.airlineCode = airlineCode;
+    }
+
+    public String getAirlineName() {
+        return airlineName;
+    }
+
+    public void setAirlineName(String airlineName) {
+        this.airlineName = airlineName;
     }
 
     public String getDeparture() {
@@ -99,12 +109,12 @@ public class FlightDTO {
         this.gateNumber = gateNumber;
     }
 
-    public int getTicket_price() {
-        return ticket_price;
+    public int getTicketPrice() {
+        return ticketPrice;
     }
 
-    public void setTicket_price(int ticket_price) {
-        this.ticket_price = ticket_price;
+    public void setTicketPrice(int ticketPrice) {
+        this.ticketPrice = ticketPrice;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -128,13 +138,14 @@ public class FlightDTO {
         return "FlightDTO{" +
                 "code=" + code +
                 ", airlineCode=" + airlineCode +
+                ", airlineName='" + airlineName + '\'' +
                 ", departure='" + departure + '\'' +
                 ", arrival='" + arrival + '\'' +
                 ", departureTime=" + departureTime +
                 ", arrivalTime=" + arrivalTime +
                 ", airplaneType='" + airplaneType + '\'' +
                 ", gateNumber='" + gateNumber + '\'' +
-                ", ticket_price=" + ticket_price +
+                ", ticket_price=" + ticketPrice +
                 ", firstCreatedDate=" + createdAt +
                 ", lastModifiedDate=" + updatedAt +
                 '}';
