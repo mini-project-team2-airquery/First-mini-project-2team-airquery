@@ -1,18 +1,27 @@
 package com.ohgiraffers.airquery.reservation.view;
 
+import com.ohgiraffers.airquery.flight.controller.FlightController;
+import com.ohgiraffers.airquery.flight.view.FlightMenu;
 import com.ohgiraffers.airquery.reservation.controller.ReservationController;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
+import com.ohgiraffers.airquery.reservation.model.dto.ReservationDetailDTO;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
+import static java.lang.Character.toUpperCase;
 
 public class ReservationMenu {
 
-    private ReservationController reservationController = new ReservationController();
+    private final ReservationController reservationController = new ReservationController();
+    private final ResultView resultView = new ResultView();
 
-    public void displayMenu() {
+    //private final FlightMenu flightMenu = new FlightMenu();
+    private final FlightController flightController = new FlightController();
 
-        Scanner sc = new Scanner(System.in);
+    public void displayMenu(Scanner sc) {
 
         System.out.println("=================== 예매 관리 화면 ===================");
 
@@ -26,6 +35,7 @@ public class ReservationMenu {
 
             System.out.println("1. 예매 목록 조회");
             System.out.println("2. 예매 상세 조회");
+            System.out.println("3. 예매 등록");
             System.out.println("9. 메인 화면으로 돌아가기");
 
             int choice = sc.nextInt();
@@ -41,20 +51,28 @@ public class ReservationMenu {
                         continue;
                     }
 
-                    reservationList.forEach(System.out::println);
+                    resultView.printReservationList(reservationList);
 
                     break;
                 case 2:
                     System.out.println("============== 나의 예매 내역 ==============");
-                    reservationController.getAllReservations(memberCode)
-                            .stream()
-                            .forEach(System.out::println);
+
+                    List<ReservationDTO> list =
+                            reservationController.getAllReservations(memberCode);
+
+                    if(list.isEmpty()) {
+                        System.out.println("현재 예매 내역이 존재하지 않습니다.");
+                        continue;
+                    }
+
+                    resultView.printReservationList(list);
 
                     System.out.println("위 예매 내역 중 상세 정보를 조회할 예매 번호를 선택해주세요: ");
+
                     int selectedReservationCode = sc.nextInt();
                     sc.nextLine();
 
-                    ReservationDTO reservation =
+                    ReservationDetailDTO reservation =
                             reservationController.getReservationDetail(selectedReservationCode, memberCode);
 
                     if(reservation == null) {
@@ -62,10 +80,33 @@ public class ReservationMenu {
                         continue;
                     }
 
-                    // 현재는 순수 예매 정보만 출력
-                    // 추후에 결제 정보 및 좌석 정보, 수하물 위탁 여부를 고려하여 전체 상세 내역을 출력할 예정
-                    System.out.println("============= 선택한 예매의 상세 내역 =============");
-                    System.out.println(reservation);
+                    resultView.printReservationDetail(reservation);
+                    break;
+                case 3:
+                    System.out.println("============== 항공편 리스트 =============");
+                    System.out.println(flightController.selectAllFlight());
+                    //flightMenu.selectAllFlight();
+
+                    int selectedFlightCode;
+                    boolean selectedBaggageCarrying = false;
+
+                    System.out.println("예매를 원하시는 항공편을 선택해주세요: ");
+                    selectedFlightCode = sc.nextInt();
+                    sc.nextLine();
+
+                    System.out.println("수하물 지참 여부를 입력해주세요(Y/N): ");
+                    char baggageCarrying = sc.next().charAt(0);
+
+                    if (toUpperCase(baggageCarrying) == 'Y') {
+                        selectedBaggageCarrying = true;
+                    }
+
+                    Map<String, Object> requestMap = new HashMap<>();
+                    requestMap.put("memberCode", memberCode);
+                    requestMap.put("flightCode", selectedFlightCode);
+                    requestMap.put("baggageCarrying", selectedBaggageCarrying);
+
+                    reservationController.registerReservation(requestMap);
                     break;
                 case 9:
                     return;
