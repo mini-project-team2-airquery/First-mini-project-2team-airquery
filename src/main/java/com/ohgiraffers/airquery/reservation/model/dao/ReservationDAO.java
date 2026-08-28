@@ -34,7 +34,7 @@ public class ReservationDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        List<ReservationDTO> reservationList = null;
+        List<ReservationDTO> reservationList = new ArrayList<>();
 
         String query = "SELECT * FROM tbl_reservation WHERE member_code=? ";
 
@@ -43,8 +43,6 @@ public class ReservationDAO {
             pstmt.setInt(1, memberCode);
 
             rs = pstmt.executeQuery();
-
-            reservationList = new ArrayList<>();
 
             while(rs.next()) {
 
@@ -69,6 +67,51 @@ public class ReservationDAO {
 
         return reservationList;
     }
+
+    /* 결제가 안된 예매 내역 조회 */
+    public List<ReservationDTO> findByPaymentIsNull (Connection con, int memberCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        List<ReservationDTO> reservationList = new ArrayList<>();
+
+        // 결제 테이블에 존재하지 않는 예약 코드만 조회
+        String query = "SELECT * FROM tbl_reservation t " +
+                "WHERE t.member_code = ? " +
+                "AND t.reservation_code NOT IN " +
+                "   (SELECT p.reservation_code FROM tbl_payment p)";
+        
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, memberCode);
+
+            rs = pstmt.executeQuery();
+
+            while(rs.next()) {
+
+                ReservationDTO reservation = new ReservationDTO();
+
+                reservation.setReservationCode(rs.getInt("reservation_code"));
+                reservation.setMemberCode(rs.getInt("member_code"));
+                reservation.setFlightCode(rs.getInt("flight_code"));
+                reservation.setSeatCode(rs.getInt("seat_code"));
+                reservation.setBaggageCarrying(rs.getBoolean("baggage_carrying"));
+                reservation.setCreatedAt(rs.getObject("first_created_date", LocalDateTime.class));
+                reservation.setUpdatedAt(rs.getObject("last_modified_date", LocalDateTime.class));
+
+                reservationList.add(reservation);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rs);
+            close(pstmt);
+        }
+
+        return reservationList;
+    }
+
 
     /* 예약 상세 조회 */
     public ReservationDTO findById(Connection con, int reservationCode, int memberCode) {
