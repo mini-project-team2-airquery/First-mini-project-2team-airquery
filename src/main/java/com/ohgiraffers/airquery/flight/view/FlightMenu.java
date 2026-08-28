@@ -54,6 +54,7 @@ public class FlightMenu {
                     break;
 
                 case "9":
+                    System.out.println("메인 메뉴로 돌아갑니다.");
                     return;
 
                 default:
@@ -86,6 +87,7 @@ public class FlightMenu {
                     break;
 
                 case "9":
+                    System.out.println("메인 메뉴로 돌아갑니다.");
                     return;
 
                 default:

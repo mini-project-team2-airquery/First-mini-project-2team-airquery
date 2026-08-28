@@ -16,7 +16,8 @@ public class AirlineMenu {
             new AirlineView();
 
 
-    public void displayMenu(Scanner sc) {
+    // ================= 관리자 항공사 메뉴 =================
+    public void displayAdminMenu(Scanner sc) {
 
         while (true) {
 
@@ -50,6 +51,41 @@ public class AirlineMenu {
 
                 case "4":
                     deleteAirline(sc);
+                    break;
+
+                case "9":
+                    return;
+
+                default:
+                    System.out.println(
+                            "잘못된 입력입니다. 다시 선택해주세요."
+                    );
+                    break;
+            }
+        }
+    }
+
+
+    // ================= 일반회원 항공사 메뉴 =================
+    public void displayNormalMenu(Scanner sc) {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("=================================");
+            System.out.println("          항공사 조회");
+            System.out.println("=================================");
+            System.out.println("1. 항공사 조회");
+            System.out.println("9. 메인 메뉴로 돌아가기");
+            System.out.println("=================================");
+            System.out.print("메뉴 선택 : ");
+
+            String input = sc.nextLine();
+
+            switch (input) {
+
+                case "1":
+                    selectAllAirlines();
                     break;
 
                 case "9":

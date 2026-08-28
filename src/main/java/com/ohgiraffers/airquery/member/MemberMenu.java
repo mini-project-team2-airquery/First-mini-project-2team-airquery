@@ -14,6 +14,7 @@ public class MemberMenu {
             System.out.println("1. 내 정보 조회");
             System.out.println("2. 회원정보 수정");
             System.out.println("9. 메인 메뉴로 돌아가기");
+            System.out.println("---------------------------------");
             System.out.print("메뉴 선택 : ");
             String input = sc.nextLine();
 
