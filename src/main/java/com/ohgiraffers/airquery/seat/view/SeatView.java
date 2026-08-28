@@ -205,10 +205,14 @@ public class SeatView {
     }
 
     public void displayNeedRepaymentMessage() {
-        System.out.println("상위 등급 좌석으로 변경하려면 결제 취소 후 다시 진행해주세요.");
+        System.out.println("상위 등급 좌석으로 변경하려면 취소 후 예매를 다시 해주세요.");
     }
 
     public void displayOnlySameClassChangeMessage() {
         System.out.println("좌석 변경은 같은 등급 좌석으로만 가능합니다.");
+    }
+
+    public void displayInputOldSeatCodeMessage() {
+        System.out.print("현재 선택한 좌석번호를 입력하세요 : ");
     }
 }

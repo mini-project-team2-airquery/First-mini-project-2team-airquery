@@ -109,39 +109,11 @@ public class SeatMenu {
         seatView.displayAvailableSeatList(seatList);
     }
 
-    // 비행기 편면과 좌석 번호를 입력해서 예약하는 메서드
+    // 예매와 연결하지 않고 좌석번호만 입력해서 예약하는 메서드
     private void reserveSeat(Scanner sc, int memberCode) {
 
-        Map<Integer, Integer> reservationMap = seatController.getReservationsWithoutSeat(memberCode);
-
-        if (reservationMap.isEmpty()) {
-            seatView.displayNeedReservationFirstMessage();
-            backToSeatMenu(sc);
-            return;
-        }
-
-        seatView.displayReservationsWithoutSeat(reservationMap);
-
-        seatView.displayInputReservationCodeMessage();
-        String reservationCodeInput = sc.nextLine();
-
-        if (!reservationCodeInput.matches("[0-9]+")) {
-            seatView.displayNumberOnlyMessage();
-            backToSeatMenu(sc);
-            return;
-        }
-
-        int reservationCode = Integer.parseInt(reservationCodeInput);
-
-        if (!reservationMap.containsKey(reservationCode)) {
-            seatView.displayInvalidReservationCodeMessage();
-            backToSeatMenu(sc);
-            return;
-        }
-
-        int flightCode = reservationMap.get(reservationCode);
-
-        List<SeatDTO> seatList = seatController.getAvailableSeatsByFlightCode(flightCode);
+        // 먼저 예약 가능한 좌석만 보여준다.
+        List<SeatDTO> seatList = seatController.getAvailableSeats();
         seatView.displayAvailableSeatList(seatList);
 
         if (seatList.isEmpty()) {
@@ -160,7 +132,8 @@ public class SeatMenu {
 
         int seatCode = Integer.parseInt(seatCodeInput);
 
-        boolean isSuccess = seatController.reserveSeat(memberCode, reservationCode, seatCode, flightCode);
+        // 입력한 좌석번호의 is_reserved 값을 true로 변경한다.
+        boolean isSuccess = seatController.reserveSeat(seatCode);
 
         seatView.displayReserveSeatResult(isSuccess);
         backToSeatMenu(sc);
@@ -169,34 +142,21 @@ public class SeatMenu {
     // 이미 선택한 좌석을 새 좌석으로 변경하는 메서드
     private void changeSeat(Scanner sc, int memberCode) {
 
-        // 좌석 변경은 "내가 예매한 항공편" 안에서만 가능하다.
-        // 그래서 먼저 어떤 항공편의 좌석을 변경할지 항공편번호를 입력받는다.
-        seatView.displayInputFlightCodeMessage();
-        String flightCodeInput = sc.nextLine();
+        // 예매와 연결하지 않고 좌석만 변경하므로 현재 선택한 좌석번호를 먼저 입력받는다.
+        seatView.displayInputOldSeatCodeMessage();
+        String oldSeatCodeInput = sc.nextLine();
 
-        // 항공편번호는 숫자만 입력해야 하므로 문자, 한글이 들어오면 메뉴로 돌려보낸다.
-        if (!flightCodeInput.matches("[0-9]+")) {
+        // 좌석번호는 숫자만 입력해야 하므로 문자, 한글이 들어오면 메뉴로 돌려보낸다.
+        if (!oldSeatCodeInput.matches("[0-9]+")) {
             seatView.displayNumberOnlyMessage();
             backToSeatMenu(sc);
             return;
         }
 
-        int flightCode = Integer.parseInt(flightCodeInput);
+        int oldSeatCode = Integer.parseInt(oldSeatCodeInput);
 
-        // 이 회원이 해당 항공편에서 이미 좌석을 선택했는지 확인한다.
-        // 좌석 변경은 기존 좌석이 있어야 가능하기 때문에 seat_code가 있는 예매를 찾는다.
-        boolean hasSelectedSeat = seatController.hasReservationWithSeat(memberCode, flightCode);
-
-        // 아직 좌석을 선택하지 않은 예매라면 "변경"이 아니라 "좌석 예약"을 먼저 해야 한다.
-        if (!hasSelectedSeat) {
-            seatView.displayNeedSeatFirstMessage();
-            backToSeatMenu(sc);
-            return;
-        }
-
-        // 해당 항공편에서 아직 예약되지 않은 좌석만 보여준다.
-        // 이미 예약된 좌석은 새 좌석으로 선택할 수 없다.
-        List<SeatDTO> seatList = seatController.getAvailableSeatsByFlightCode(flightCode);
+        // 예약 가능한 좌석만 보여준다.
+        List<SeatDTO> seatList = seatController.getAvailableSeats();
         seatView.displayAvailableSeatList(seatList);
 
         // 남은 좌석이 하나도 없으면 변경할 좌석이 없으므로 메뉴로 돌아간다.
@@ -221,10 +181,17 @@ public class SeatMenu {
         // oldFlightClass : 현재 내가 선택해둔 기존 좌석 등급
         // newFlightClass : 새로 바꾸려는 좌석 등급
         // 예) 기존 좌석 = ECONOMY, 새 좌석 = FIRST
-        String oldFlightClass = seatController.getSelectedSeatClass(memberCode, flightCode);
-        String newFlightClass = seatController.getSeatClass(newSeatCode, flightCode);
+        String oldFlightClass = seatController.getReservedSeatClassBySeatCode(oldSeatCode);
+        String newFlightClass = seatController.getAvailableSeatClassBySeatCode(newSeatCode);
 
-        // 새 좌석번호가 없거나, 해당 항공편의 좌석이 아니거나, 이미 예약된 좌석이면 null이 나온다.
+        // 기존 좌석번호가 없거나, 예약된 좌석이 아니면 변경할 수 없다.
+        if (oldFlightClass == null) {
+            seatView.displayNeedSeatFirstMessage();
+            backToSeatMenu(sc);
+            return;
+        }
+
+        // 새 좌석번호가 없거나 이미 예약된 좌석이면 null이 나온다.
         if (newFlightClass == null) {
             seatView.displayChangeSeatResult(false);
             backToSeatMenu(sc);
@@ -249,7 +216,7 @@ public class SeatMenu {
         }
 
         // 여기까지 통과했다면 같은 등급의 예약 가능한 좌석이므로 실제 좌석 변경을 진행한다.
-        boolean isSuccess = seatController.changeSeat(memberCode, newSeatCode, flightCode);
+        boolean isSuccess = seatController.changeSeatOnly(oldSeatCode, newSeatCode);
 
         seatView.displayChangeSeatResult(isSuccess);
         backToSeatMenu(sc);

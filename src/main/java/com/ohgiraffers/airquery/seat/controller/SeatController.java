@@ -37,6 +37,12 @@ public class SeatController {
         return seatService.selectReservationsWithoutSeat(memberCode);
     }
 
+    // 예매와 연결하지 않고 좌석번호만으로 좌석을 예약하는 메서드
+    public boolean reserveSeat(int seatCode) {
+
+        return seatService.reserveSeat(seatCode);
+    }
+
     // 특정 항공편의 좌석을 예약하는 메서드
     public boolean reserveSeat(int memberCode, int reservationCode, int seatCode, int flightCode) {
 
@@ -59,6 +65,24 @@ public class SeatController {
     public boolean changeSeat(int memberCode, int newSeatCode, int flightCode) {
 
         return seatService.changeSeat(memberCode, newSeatCode, flightCode);
+    }
+
+    // 예매와 연결하지 않고 기존 좌석번호와 새 좌석번호만으로 변경하는 메서드
+    public boolean changeSeatOnly(int oldSeatCode, int newSeatCode) {
+
+        return seatService.changeSeatOnly(oldSeatCode, newSeatCode);
+    }
+
+    // 현재 선택되어 있는 기존 좌석의 등급을 조회하는 메서드
+    public String getReservedSeatClassBySeatCode(int seatCode) {
+
+        return seatService.getReservedSeatClassBySeatCode(seatCode);
+    }
+
+    // 새로 선택하려는 예약 가능한 좌석의 등급을 조회하는 메서드
+    public String getAvailableSeatClassBySeatCode(int seatCode) {
+
+        return seatService.getAvailableSeatClassBySeatCode(seatCode);
     }
 
     // 회원이 현재 선택한 좌석의 등급을 조회하는 메서드

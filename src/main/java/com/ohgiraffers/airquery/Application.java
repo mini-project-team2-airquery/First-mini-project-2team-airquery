@@ -265,7 +265,7 @@ public class Application {
 
         if("Admin".equals(loginMember.getMemberAuth())){
 
-            seatMenu.displayMenu(sc);
+            seatMenu.displayMenu(sc, loginMember.getMemberCode());
         } else if("Member".equals(loginMember.getMemberAuth())){
 
             seatMenu.displayMenu(sc, loginMember.getMemberCode());
