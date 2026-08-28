@@ -16,9 +16,7 @@ public class AirlineMenu {
             new AirlineView();
 
 
-    public void displayMenu() {
-
-        Scanner sc = new Scanner(System.in);
+    public void displayMenu(Scanner sc) {
 
         while (true) {
 

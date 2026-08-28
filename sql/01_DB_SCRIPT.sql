@@ -22,7 +22,9 @@ CREATE TABLE tbl_member
     passport_number   VARCHAR(50)  NOT NULL COMMENT '여권번호',
     first_created_date DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '가입일자',
     last_modified_date DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종수정일',
-    CONSTRAINT pk_member_code PRIMARY KEY (member_code)
+    CONSTRAINT pk_member_code PRIMARY KEY (member_code),
+    CONSTRAINT chk_member_auth
+        CHECK (member_auth IN ('Admin','Member'))
 ) ENGINE = InnoDB COMMENT = '회원';
 
 CREATE TABLE tbl_airline
