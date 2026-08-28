@@ -1,5 +1,6 @@
 package com.ohgiraffers.airquery;
 
+import com.ohgiraffers.airquery.airline.menu.AirlineMenu;
 import com.ohgiraffers.airquery.flight.view.FlightMenu;
 import com.ohgiraffers.airquery.member.*;
 import com.ohgiraffers.airquery.reservation.view.ReservationMenu;
@@ -235,50 +236,13 @@ public class Application {
         }
     }
 
-
     // ================= 항공사 =================
 
     public static void airlineMenu(Scanner sc) {
 
-        while (true) {
+        AirlineMenu airlineMenu = new AirlineMenu();
 
-            System.out.println();
-            System.out.println("===== 항공사 메뉴 =====");
-            System.out.println("1. 항공사 등록");
-            System.out.println("2. 항공사 조회");
-            System.out.println("3. 항공사 변경");
-            System.out.println("4. 항공사 삭제");
-            System.out.println("9. 메인 메뉴로 돌아가기");
-            System.out.print("메뉴 선택 : ");
-
-            String input = sc.nextLine();
-
-            switch (input) {
-
-                case "1":
-                    System.out.println("항공사 등록 기능 구현 예정");
-                    break;
-
-                case "2":
-                    System.out.println("항공사 조회 기능 구현 예정");
-                    break;
-
-                case "3":
-                    System.out.println("항공사 변경 기능 구현 예정");
-                    break;
-
-                case "4":
-                    System.out.println("항공사 삭제 기능 구현 예정");
-                    break;
-
-                case "9":
-                    return;
-
-                default:
-                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
-                    break;
-            }
-        }
+        airlineMenu.displayMenu();
     }
 
 

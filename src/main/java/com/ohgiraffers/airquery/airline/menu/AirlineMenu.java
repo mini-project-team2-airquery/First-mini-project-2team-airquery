@@ -68,7 +68,7 @@ public class AirlineMenu {
 
 
     // FR-07 항공사 조회
-    private void selectAllAirlines() {
+    public void selectAllAirlines() {
 
         List<AirlineDTO> airlineList =
                 airlineController.selectAllAirlines();
