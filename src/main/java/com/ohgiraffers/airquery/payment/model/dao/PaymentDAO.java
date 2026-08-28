@@ -26,6 +26,7 @@ public class PaymentDAO {
         }
     }
 
+    /* 특정 예약 건에 대한 결제 정보 조회 */
     public PaymentDTO findByReservation(Connection con, int reservationCode) {
 
         PreparedStatement pstmt = null;
@@ -38,7 +39,8 @@ public class PaymentDAO {
             pstmt = con.prepareStatement("" +
                     "select * " +
                     "from tbl_payment " +
-                    "where tbl_payment.reservation_code = ?");
+                    "where tbl_payment.reservation_code = ?" +
+                    "");
 
             pstmt.setInt(1, reservationCode);
 
@@ -63,5 +65,75 @@ public class PaymentDAO {
         }
 
         return payment;
+    }
+
+    public int insertPayment(Connection con, PaymentDTO payment) {
+
+        PreparedStatement pstmt = null;
+        int rs = 0;
+
+        String insertQuery = "" +
+                "INSERT INTO tbl_payment " +
+                "(reservation_code, payment_amount, payment_method, refund_status) " +
+                "VALUES (?, ?, ?, ?)" +
+                "";
+
+        // 총 결제 금액 계산 = 좌석 추가 금액 + 티켓 가격 (default 금액은 0원)
+        int paymentAmount = getPaymentAmount(con, payment.getReservationCode());
+
+        try {
+
+            pstmt = con.prepareStatement(insertQuery);
+
+            pstmt.setInt(1, payment.getReservationCode());
+            pstmt.setInt(2, paymentAmount);
+            pstmt.setString(3, payment.getPaymentMethod());
+            pstmt.setBoolean(4, payment.isRefundStatus());
+
+            rs =  pstmt.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+        }
+
+        return rs;
+    }
+
+    public int getPaymentAmount(Connection con, int reservationCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        int paymentAmount = 0;
+
+        String calculateAmountQuery = "" +
+                "SELECT f.flight_ticket_price, s.additional_amount " +
+                "                FROM tbl_reservation r " +
+                "                JOIN tbl_flight f ON f.flight_code = r.flight_code " +
+                "                JOIN tbl_seat s ON r.seat_code = s.seat_code " +
+                "                WHERE r.reservation_code = ?" +
+                "";
+
+        try {
+
+            pstmt = con.prepareStatement(calculateAmountQuery);
+            pstmt.setInt(1, reservationCode);
+
+            // 결제, 좌석 등록 내역이 없다면 추가 금액 0원 처리
+            rs =  pstmt.executeQuery();
+            if(rs.next()) {
+
+                paymentAmount = rs.getInt("flight_ticket_price") +
+                        rs.getInt("additional_amount");
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rs);
+            close(pstmt);
+        }
+
+        return paymentAmount;
     }
 }

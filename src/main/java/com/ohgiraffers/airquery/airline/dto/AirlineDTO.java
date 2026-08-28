@@ -1,14 +1,14 @@
 package com.ohgiraffers.airquery.airline.dto;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class AirlineDTO {
 
     private int airlineCode;
     private String airlineName;
     private String customerServiceNumber;
-    private LocalDateTime firstCreatedDate;
-    private LocalDateTime lastModifiedDate;
+    private Timestamp firstCreatedDate;
+    private Timestamp lastModifiedDate;
 
     public AirlineDTO() {
     }
@@ -16,14 +16,18 @@ public class AirlineDTO {
     public AirlineDTO(int airlineCode,
                       String airlineName,
                       String customerServiceNumber,
-                      LocalDateTime firstCreatedDate,
-                      LocalDateTime lastModifiedDate) {
-
+                      Timestamp firstCreatedDate,
+                      Timestamp lastModifiedDate) {
         this.airlineCode = airlineCode;
         this.airlineName = airlineName;
         this.customerServiceNumber = customerServiceNumber;
         this.firstCreatedDate = firstCreatedDate;
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public AirlineDTO(String airlineName, String customerServiceNumber) {
+        this.airlineName = airlineName;
+        this.customerServiceNumber = customerServiceNumber;
     }
 
     public int getAirlineCode() {
@@ -50,19 +54,19 @@ public class AirlineDTO {
         this.customerServiceNumber = customerServiceNumber;
     }
 
-    public LocalDateTime getFirstCreatedDate() {
+    public Timestamp getFirstCreatedDate() {
         return firstCreatedDate;
     }
 
-    public void setFirstCreatedDate(LocalDateTime firstCreatedDate) {
+    public void setFirstCreatedDate(Timestamp firstCreatedDate) {
         this.firstCreatedDate = firstCreatedDate;
     }
 
-    public LocalDateTime getLastModifiedDate() {
+    public Timestamp getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(Timestamp lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 
