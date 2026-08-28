@@ -36,7 +36,10 @@ public class ReservationDAO {
 
         List<ReservationDTO> reservationList = new ArrayList<>();
 
-        String query = "SELECT * FROM tbl_reservation WHERE member_code=? ";
+        String query = "" +
+                "SELECT * FROM tbl_reservation " +
+                "WHERE member_code=? " +
+                "AND is_deleted = FALSE";
 
         try {
             pstmt = con.prepareStatement(query);
@@ -80,7 +83,8 @@ public class ReservationDAO {
         String query = "SELECT * FROM tbl_reservation t " +
                 "WHERE t.member_code = ? " +
                 "AND t.reservation_code NOT IN " +
-                "   (SELECT p.reservation_code FROM tbl_payment p)";
+                "   (SELECT p.reservation_code FROM tbl_payment p)" +
+                "AND is_deleted = FALSE";
         
         try {
             pstmt = con.prepareStatement(query);
@@ -121,7 +125,12 @@ public class ReservationDAO {
 
         ReservationDTO reservation = null;
 
-        String query = "SELECT * FROM tbl_reservation WHERE reservation_code = ? AND member_code = ?";
+        String query = "" +
+                "SELECT * FROM tbl_reservation " +
+                "WHERE reservation_code = ? " +
+                "AND member_code = ? " +
+                "AND is_deleted = FALSE" +
+                "";
 
         try {
 
@@ -130,17 +139,19 @@ public class ReservationDAO {
             pstmt.setInt(2, memberCode);
 
             rs = pstmt.executeQuery();
-            rs.next();
 
-            reservation = new ReservationDTO();
+            if(rs.next()) {
 
-            reservation.setReservationCode(rs.getInt("reservation_code"));
-            reservation.setMemberCode(rs.getInt("member_code"));
-            reservation.setFlightCode(rs.getInt("flight_code"));
-            reservation.setSeatCode(rs.getInt("seat_code"));
-            reservation.setBaggageCarrying(rs.getBoolean("baggage_carrying"));
-            reservation.setCreatedAt(rs.getObject("first_created_date", LocalDateTime.class));
-            reservation.setUpdatedAt(rs.getObject("last_modified_date", LocalDateTime.class));
+                reservation = new ReservationDTO();
+
+                reservation.setReservationCode(rs.getInt("reservation_code"));
+                reservation.setMemberCode(rs.getInt("member_code"));
+                reservation.setFlightCode(rs.getInt("flight_code"));
+                reservation.setSeatCode(rs.getInt("seat_code"));
+                reservation.setBaggageCarrying(rs.getBoolean("baggage_carrying"));
+                reservation.setCreatedAt(rs.getObject("first_created_date", LocalDateTime.class));
+                reservation.setUpdatedAt(rs.getObject("last_modified_date", LocalDateTime.class));
+            }
         } catch(SQLException e) {
             e.printStackTrace();
         } finally {
@@ -163,8 +174,9 @@ public class ReservationDAO {
                 "SELECT * " +
                 "FROM tbl_reservation " +
                 "WHERE member_code = ? " +
-                "AND flight_code = ?" +
-                "";
+                "AND flight_code = ? " +
+                "AND is_deleted = FALSE" +
+                "" ;
 
         // 좌석번호는 기본적으로 미선택, null이 default
         String insertQuery = "" +
@@ -207,6 +219,58 @@ public class ReservationDAO {
     }
 
     /* 예약 취소 */
+    public int deleteReservation(Connection con, int reservationCode) {
+
+        int result = 0;
+        PreparedStatement pstmt = null;
+
+        String deleteBaggageQuery = "" +
+                "DELETE FROM tbl_baggage " +
+                "WHERE reservation_code = ?";
+
+        String updateSeatQuery = "" +
+                "UPDATE tbl_seat SET is_reserved = FALSE " +
+                "WHERE seat_code = (SELECT seat_code FROM tbl_reservation WHERE reservation_code = ?)";
+
+        String updatePaymentQuery = "" +
+                "UPDATE tbl_payment SET refund_status = TRUE " +
+                "WHERE reservation_code = ?";
+
+        String updateReservationQuery = "" +
+                "UPDATE tbl_reservation SET is_deleted = TRUE, seat_code = null " +
+                "WHERE reservation_code = ?";
+        try {
+
+            // 1. 수하물 삭제 (있으면 지워지고, 없으면 0건 삭제되고 끝)
+            pstmt = con.prepareStatement(deleteBaggageQuery);
+            pstmt.setInt(1, reservationCode);
+            pstmt.executeUpdate();
+
+            // 2. 좌석 선점 해제
+            pstmt = con.prepareStatement(updateSeatQuery);
+            pstmt.setInt(1, reservationCode);
+            pstmt.executeUpdate();
+
+            // 3. 결제 환불 처리
+            pstmt = con.prepareStatement(updatePaymentQuery);
+            pstmt.setInt(1, reservationCode);
+            pstmt.executeUpdate();
+
+            // 4. 예매 취소
+            pstmt = con.prepareStatement(updateReservationQuery);
+            pstmt.setInt(1, reservationCode);
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /* 특정 예약 건에 대한 좌석 및 수하물 정보 조회 */
 
     /* 예약 변경 (취소 후 재결제) */
 }

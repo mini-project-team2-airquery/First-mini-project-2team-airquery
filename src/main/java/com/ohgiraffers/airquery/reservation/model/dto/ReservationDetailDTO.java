@@ -13,6 +13,7 @@ public class ReservationDetailDTO {
     private int flightCode;                         // 항공편번호
     private LocalDateTime reservationCreatedDate;   // 예매날짜
     private LocalDateTime reservationUpdatedDate;   // 최종수정일
+    private boolean isDeleted;                      // 취소여부
 
     // 항공편
     private int ticketPrice;                        // 항공편 티켓 가격
@@ -34,6 +35,14 @@ public class ReservationDetailDTO {
     // 수하물
     private int baggageCode;        // 수하물 번호
     private double baggageWeight;   // 수하물 무게
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
 
     public int getReservationCode() {
         return reservationCode;

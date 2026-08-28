@@ -48,4 +48,16 @@ public class ReservationController {
             System.out.println("예매 등록 실패");
         }
     }
+
+    /* 예매 취소 */
+    public void cancleReservation(int reservationCode, int memberCode) {
+
+        int result = reservationService.cancleReservation(reservationCode, memberCode);
+
+        if(result == 1) {
+            System.out.println("예매 취소 성공");
+        } else {
+            System.out.println("예매 취소 실패");
+        }
+    }
 }

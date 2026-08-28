@@ -35,6 +35,7 @@ public class ReservationMenu {
             System.out.println("1. 예매 목록 조회");
             System.out.println("2. 예매 상세 조회");
             System.out.println("3. 예매 등록");
+            System.out.println("4. 예매 취소");
             System.out.println("9. 메인 화면으로 돌아가기");
 
             int choice = sc.nextInt();
@@ -74,7 +75,7 @@ public class ReservationMenu {
                     ReservationDetailDTO reservation =
                             reservationController.getReservationDetail(selectedReservationCode, memberCode);
 
-                    if(reservation == null) {
+                    if(reservation == null || reservation.isDeleted()) {
                         System.out.println("현재 예매 내역이 존재하지 않습니다.");
                         continue;
                     }
@@ -106,6 +107,31 @@ public class ReservationMenu {
 
                     reservationController.registerReservation(requestMap);
                     break;
+                case 4:
+                    System.out.println("취소할 예매 번호를 입력해주세요.");
+
+                    selectedReservationCode = sc.nextInt();
+                    sc.nextLine();
+
+                    ReservationDetailDTO cancleReservation =
+                            reservationController.getReservationDetail(selectedReservationCode, memberCode);
+
+                    if(cancleReservation == null) {
+                        System.out.println("예매 내역이 이미 취소되었거나, 존재하지 않는 예매 번호입니다.");
+                        continue;
+                    }
+
+                    System.out.println("정말 취소하시겠습니까?");
+                    char check = sc.nextLine().charAt(0);
+
+                    if(toUpperCase(check) == 'Y') {
+
+                        // 예매 내역 삭제(소프트 삭제)
+                        reservationController.cancleReservation(selectedReservationCode, memberCode);
+                    } else {
+                        System.out.println("취소 실패했습니다. 다시 시도해주세요.");
+                    }
+
                 case 9:
                     return;
                 default:
