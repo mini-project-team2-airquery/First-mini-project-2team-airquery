@@ -82,6 +82,12 @@
         FROM tbl_airline
         WHERE airline_code = ?
     </entry>
+
+    <entry key="existsFlight">
+        SELECT COUNT(*)
+        FROM tbl_flight
+        WHERE flight_code = ?
+    </entry>
     
     <entry key="updateFlightInfo">
         UPDATE tbl_flight
@@ -109,6 +115,12 @@
             flight_ticket_price = ?
         WHERE
             flight_code = ?
+    </entry>
+
+    <entry key="existsReservation">
+        SELECT COUNT(*)
+        FROM tbl_reservation
+        WHERE flight_code = ?
     </entry>
 
     <entry key="deleteFlight">

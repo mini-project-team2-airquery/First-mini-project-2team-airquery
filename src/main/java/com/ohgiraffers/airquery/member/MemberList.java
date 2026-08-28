@@ -17,7 +17,7 @@ public class MemberList {
 
         try {
             System.out.println();
-            System.out.println("===== 고객목록 조회 =====");
+            System.out.println("===== 회원목록 조회 =====");
 
             String query =
                     "SELECT member_code, member_name, member_id, member_auth, " +
@@ -44,10 +44,10 @@ public class MemberList {
             }
 
             if (!hasMember) {
-                System.out.println("등록된 고객이 없습니다.");
+                System.out.println("등록된 회원이 없습니다.");
             } else {
                 System.out.println("---------------------------------");
-                System.out.println("고객목록 조회가 완료되었습니다.");
+                System.out.println("회원목록 조회가 완료되었습니다.");
             }
         } catch (Exception e) {
             e.printStackTrace();

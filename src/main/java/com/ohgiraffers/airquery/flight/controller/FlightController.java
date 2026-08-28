@@ -29,4 +29,34 @@ public class FlightController {
 
         return flightService.existsAirline(airlineCode);
     }
+
+    public boolean existsFlight(int code) {
+
+        return flightService.existsFlight(code);
+    }
+
+    public boolean updateFlightInfo(FlightDTO flight) {
+
+        return flightService.updateFlightInfo(flight);
+    }
+
+    public boolean updateFlightSchedule(FlightDTO flight) {
+
+        return flightService.updateFlightSchedule(flight);
+    }
+
+    public boolean updateFlightPrice(FlightDTO flight) {
+
+        return flightService.updateFlightPrice(flight);
+    }
+
+    public boolean existsReservation(int code) {
+
+        return flightService.existsReservation(code);
+    }
+
+    public boolean deleteFlight(FlightDTO flight) {
+
+        return flightService.deleteFlight(flight);
+    }
 }
