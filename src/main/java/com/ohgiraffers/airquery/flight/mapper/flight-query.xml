@@ -76,6 +76,12 @@
             ?
         )
     </entry>
+
+    <entry key="existsAirline">
+        SELECT COUNT(*)
+        FROM tbl_airline
+        WHERE airline_code = ?
+    </entry>
     
     <entry key="updateFlightInfo">
         UPDATE tbl_flight

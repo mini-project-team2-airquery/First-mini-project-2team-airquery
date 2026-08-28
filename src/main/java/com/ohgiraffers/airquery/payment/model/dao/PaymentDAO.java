@@ -43,17 +43,18 @@ public class PaymentDAO {
             pstmt.setInt(1, reservationCode);
 
             rs = pstmt.executeQuery();
-            rs.next();
 
-            payment = new PaymentDTO();
+            if(rs.next()) {
+                payment = new PaymentDTO();
 
-            payment.setPaymentCode(rs.getInt("payment_code"));
-            payment.setReservationCode(rs.getInt("reservation_code"));
-            payment.setPaymentAmount(rs.getInt("payment_amount"));
-            payment.setPaymentMethod(rs.getString("payment_method"));
-            payment.setRefundStatus(rs.getBoolean("refund_status"));
-            payment.setCreatedAt(rs.getObject("first_created_date", LocalDateTime.class));
-            payment.setUpdatedAt(rs.getObject("last_modified_date", LocalDateTime.class));
+                payment.setPaymentCode(rs.getInt("payment_code"));
+                payment.setReservationCode(rs.getInt("reservation_code"));
+                payment.setPaymentAmount(rs.getInt("payment_amount"));
+                payment.setPaymentMethod(rs.getString("payment_method"));
+                payment.setRefundStatus(rs.getBoolean("refund_status"));
+                payment.setCreatedAt(rs.getObject("first_created_date", LocalDateTime.class));
+                payment.setUpdatedAt(rs.getObject("last_modified_date", LocalDateTime.class));
+            }
         } catch(SQLException e) {
             e.printStackTrace();
         } finally {

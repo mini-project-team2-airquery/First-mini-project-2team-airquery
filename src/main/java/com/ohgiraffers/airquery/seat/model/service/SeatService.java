@@ -27,6 +27,20 @@ public class SeatService {
     }
 
     /*
+     * 예약 가능한 좌석 조회 서비스 메서드
+     */
+    public List<SeatDTO> selectAvailableSeats() {
+
+        Connection con = getConnection();
+
+        List<SeatDTO> seatList = seatDAO.selectAvailableSeats(con);
+
+        close(con);
+
+        return seatList;
+    }
+
+    /*
      * 좌석 예약 서비스 메서드
      * DB 연결을 만들고, DAO에게 좌석 예약
      */
@@ -35,6 +49,27 @@ public class SeatService {
         Connection con = getConnection();
 
         int result = seatDAO.reserveSeat(con, seatCode);
+
+        if (result > 0) {
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result > 0;
+    }
+
+    /*
+     * 좌석 변경 서비스 메서드
+     * DAO에게 좌석 변경을 요청하고 성공하면 commit, 실패하면 rollback 한다.
+     */
+    public boolean updateSeat(SeatDTO seat) {
+
+        Connection con = getConnection();
+
+        int result = seatDAO.updateSeat(con, seat);
 
         if (result > 0) {
             commit(con);

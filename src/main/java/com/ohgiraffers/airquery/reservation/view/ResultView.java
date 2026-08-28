@@ -51,22 +51,28 @@ public class ResultView {
 
         printDetailBorder('├', '┤');
 
-        printDetailRow("결제번호", detail.getPaymentCode());
-        printDetailRow("결제금액", formatMoney(detail.getPaymentAmount()));
-        printDetailRow("결제수단", detail.getPaymentMethod());
-        printDetailRow("환불여부", detail.isRefundStatus() ? "환불됨" : "정상결제");
-        printDetailRow("결제일시", formatDate(detail.getPaymentCreatedDate()));
+        if(detail.getPaymentCode() != 0) {
+            printDetailRow("결제번호", detail.getPaymentCode());
+            printDetailRow("결제금액", formatMoney(detail.getPaymentAmount()));
+            printDetailRow("결제수단", detail.getPaymentMethod());
+            printDetailRow("환불여부", detail.isRefundStatus() ? "환불됨" : "정상결제");
+            printDetailRow("결제일시", formatDate(detail.getPaymentCreatedDate()));
 
-        printDetailBorder('├', '┤');
+            printDetailBorder('├', '┤');
+        }
 
-        printDetailRow("좌석번호", detail.getSeatCode());
-        printDetailRow("좌석식별번호", detail.getSeatId());
-        printDetailRow("좌석등급", detail.getFlightClass());
+        if(detail.getSeatCode() != 0) {
+            printDetailRow("좌석번호", detail.getSeatCode());
+            printDetailRow("좌석식별번호", detail.getSeatId());
+            printDetailRow("좌석등급", detail.getFlightClass());
 
-        printDetailBorder('├', '┤');
+            printDetailBorder('├', '┤');
+        }
 
-        printDetailRow("수하물번호", detail.getBaggageCode());
-        printDetailRow("수하물무게", detail.getBaggageWeight() + "kg");
+        if(detail.getBaggageCode() != 0) {
+            printDetailRow("수하물번호", detail.getBaggageCode());
+            printDetailRow("수하물무게", detail.getBaggageWeight() + "kg");
+        }
 
         printDetailBorder('└', '┘');
     }
