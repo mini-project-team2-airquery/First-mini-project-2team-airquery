@@ -74,6 +74,21 @@ public class BaggageView {
         System.out.println("예매시 수하물 신청은 안하셨으므로 등록이 안됩니다.");
     }
 
+    // 예매할 때 수하물 신청을 하지 않은 경우 조회할 수 없다는 문구 출력
+    public void displayNoBaggageCarryingSelectMessage() {
+        System.out.println("예매시 수하물 신청을 안하셨으므로 조회할 수 없습니다.");
+    }
+
+    // 예매할 때 수하물 신청을 하지 않은 경우 변경할 수 없다는 문구 출력
+    public void displayNoBaggageCarryingUpdateMessage() {
+        System.out.println("예매시 수하물 신청을 안하셨으므로 변경이 안됩니다.");
+    }
+
+    // 예매할 때 수하물을 신청한 경우 변경하려면 재예매가 필요하다는 문구 출력
+    public void displayNeedCancelAndReservationAgainMessage() {
+        System.out.println("수하물을 변경하려면 예매 취소 후 다시 예매를 진행해주세요.");
+    }
+
     // 수하물무게 형식이 맞지 않을 때 출력
     public void displayWeightOnlyMessage() {
         System.out.println("수하물무게는 숫자 또는 소수점 숫자로 입력해야 합니다.");

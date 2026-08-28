@@ -338,12 +338,6 @@ public class Application {
 
     public static void baggageMenu(Scanner sc) {
 
-        MemberDTO loginMember = Login.login(sc);
-
-        if (loginMember == null) {
-            return;
-        }
-
         BaggageMenu baggageMenu = new BaggageMenu();
 
         baggageMenu.displayMenu(sc);

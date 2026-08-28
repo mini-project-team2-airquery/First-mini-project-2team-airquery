@@ -18,7 +18,6 @@ import static com.ohgiraffers.airquery.common.JDBCTemplate.rollback;
  */
 public class BaggageService {
 
-    // SQL 실행을 담당하는 DAO 객체를 준비한다.
     private final BaggageDAO baggageDAO = new BaggageDAO();
 
     /*
@@ -27,13 +26,10 @@ public class BaggageService {
      */
     public List<BaggageDTO> selectAllBaggages() {
 
-        // DB에 접속하기 위한 Connection을 만든다.
         Connection con = getConnection();
 
-        // DAO에게 전체 수하물 SELECT 실행을 맡긴다.
         List<BaggageDTO> baggageList = baggageDAO.selectAllBaggages(con);
 
-        // DB 연결을 다 사용했으므로 닫는다.
         close(con);
 
         return baggageList;
@@ -45,13 +41,11 @@ public class BaggageService {
      */
     public boolean existsReservation(int reservationCode) {
 
-        // DB에 접속하기 위한 Connection을 만든다.
+
         Connection con = getConnection();
 
-        // DAO에게 tbl_reservation 조회를 요청한다.
         boolean isExist = baggageDAO.existsReservation(con, reservationCode);
 
-        // DB 연결을 다 사용했으므로 닫는다.
         close(con);
 
         return isExist;
@@ -63,13 +57,10 @@ public class BaggageService {
      */
     public boolean isBaggageCarrying(int reservationCode) {
 
-        // DB에 접속하기 위한 Connection을 만든다.
         Connection con = getConnection();
 
-        // DAO에게 tbl_reservation의 baggage_carrying 조회를 요청한다.
         boolean isBaggageCarrying = baggageDAO.isBaggageCarrying(con, reservationCode);
 
-        // DB 연결을 다 사용했으므로 닫는다.
         close(con);
 
         return isBaggageCarrying;
@@ -81,16 +72,12 @@ public class BaggageService {
      */
     public List<BaggageDTO> selectBaggagesByReservationCode(int reservationCode) {
 
-        // DB에 접속하기 위한 Connection을 만든다.
         Connection con = getConnection();
 
-        // DAO에게 실제 SELECT 실행을 맡긴다.
         List<BaggageDTO> baggageList = baggageDAO.selectBaggagesByReservationCode(con, reservationCode);
 
-        // DB 연결을 다 사용했으므로 닫는다.
         close(con);
 
-        // 조회된 수하물 목록을 Controller로 돌려준다.
         return baggageList;
     }
 
@@ -100,10 +87,8 @@ public class BaggageService {
      */
     public boolean registBaggage(BaggageDTO baggage) {
 
-        // DB에 접속하기 위한 Connection을 만든다.
         Connection con = getConnection();
 
-        // DAO에게 실제 INSERT 실행을 맡긴다.
         int result = baggageDAO.insertBaggage(con, baggage);
 
         // result가 1 이상이면 DB에 반영된 행이 있다는 뜻이므로 성공이다.
@@ -125,10 +110,8 @@ public class BaggageService {
      */
     public boolean updateBaggageWeight(int baggageCode, double baggageWeight) {
 
-        // DB에 접속하기 위한 Connection을 만든다.
         Connection con = getConnection();
 
-        // DAO에게 실제 UPDATE 실행을 맡긴다.
         int result = baggageDAO.updateBaggageWeight(con, baggageCode, baggageWeight);
 
         // result가 1 이상이면 변경된 행이 있다는 뜻이므로 성공이다.
