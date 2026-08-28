@@ -1,5 +1,6 @@
 package com.ohgiraffers.airquery;
 
+import com.ohgiraffers.airquery.baggage.view.BaggageMenu;
 import com.ohgiraffers.airquery.flight.view.FlightMenu;
 import com.ohgiraffers.airquery.member.*;
 import com.ohgiraffers.airquery.reservation.view.ReservationMenu;
@@ -337,30 +338,15 @@ public class Application {
 
     public static void baggageMenu(Scanner sc) {
 
-        while (true) {
+        MemberDTO loginMember = Login.login(sc);
 
-            System.out.println();
-            System.out.println("===== 수하물 메뉴 =====");
-            System.out.println("1. 수하물 기능");
-            System.out.println("9. 메인 메뉴로 돌아가기");
-            System.out.print("메뉴 선택 : ");
-
-            String input = sc.nextLine();
-
-            switch (input) {
-
-                case "1":
-                    System.out.println("수하물 기능 구현 예정");
-                    break;
-
-                case "9":
-                    return;
-
-                default:
-                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
-                    break;
-            }
+        if (loginMember == null) {
+            return;
         }
+
+        BaggageMenu baggageMenu = new BaggageMenu();
+
+        baggageMenu.displayMenu(sc);
     }
 
 
