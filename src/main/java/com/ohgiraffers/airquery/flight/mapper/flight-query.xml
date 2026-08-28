@@ -82,6 +82,12 @@
         FROM tbl_airline
         WHERE airline_code = ?
     </entry>
+
+    <entry key="existsFlight">
+        SELECT COUNT(*)
+        FROM tbl_flight
+        WHERE flight_code = ?
+    </entry>
     
     <entry key="updateFlightInfo">
         UPDATE tbl_flight

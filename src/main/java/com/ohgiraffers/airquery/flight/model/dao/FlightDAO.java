@@ -155,6 +155,8 @@ public class FlightDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(pstmt);
         }
 
         return result;
@@ -187,5 +189,135 @@ public class FlightDAO {
         }
 
         return exists;
+    }
+
+    public boolean existsFlight(Connection con, int code) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+
+        boolean exists = false;
+
+        String query = prop.getProperty("existsFlight");
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, code);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                exists = rset.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(rset);
+            JDBCTemplate.close(pstmt);
+        }
+
+        return exists;
+    }
+
+    public int updateFlightInfo(Connection con, FlightDTO flight) {
+
+        PreparedStatement pstmt = null;
+
+        int result = 0;
+
+        System.out.println("==== 변경할 항공편 정보 ====");
+        System.out.println("항공편 코드: " + flight.getCode());
+        System.out.println("출발지: " + flight.getDeparture());
+        System.out.println("도착지: " + flight.getArrival());
+        System.out.println("기종: " + flight.getAirplaneType());
+        System.out.println("게이트번호: " + flight.getGateNumber());
+
+        String query = prop.getProperty("updateFlightInfo");
+
+        try {
+
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setString(1, flight.getDeparture());
+            pstmt.setString(2, flight.getArrival());
+            pstmt.setString(3, flight.getAirplaneType());
+            pstmt.setString(4, flight.getGateNumber());
+            pstmt.setInt(5, flight.getCode());
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(pstmt);
+        }
+
+
+        return result;
+    }
+
+    public int updateFlightSchedule(Connection con, FlightDTO flight) {
+
+        PreparedStatement pstmt = null;
+
+        int result = 0;
+
+        System.out.println("==== 변경할 항공편 정보 ====");
+        System.out.println("항공편 코드: " + flight.getCode());
+        System.out.println("출발시간: " + flight.getDepartureTime());
+        System.out.println("도착시간: " + flight.getArrivalTime());
+
+        String query = prop.getProperty("updateFlightSchedule");
+
+        try {
+
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setTimestamp(1, Timestamp.valueOf(flight.getDepartureTime()));
+            pstmt.setTimestamp(2, Timestamp.valueOf(flight.getArrivalTime()));
+            pstmt.setInt(3, flight.getCode());
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(pstmt);
+        }
+
+
+        return result;
+    }
+
+    public int updateFlightPrice(Connection con, FlightDTO flight) {
+
+        PreparedStatement pstmt = null;
+
+        int result = 0;
+
+        System.out.println("==== 변경할 항공편 정보 ====");
+        System.out.println("항공편 코드: " + flight.getCode());
+        System.out.println("가격: " + flight.getTicketPrice());
+
+        String query = prop.getProperty("updateFlightPrice");
+
+        try {
+
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, flight.getTicketPrice());
+            pstmt.setInt(2, flight.getCode());
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(pstmt);
+        }
+
+
+        return result;
     }
 }

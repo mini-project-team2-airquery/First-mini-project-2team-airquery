@@ -41,7 +41,6 @@ public class FlightService {
         int result = flightDAO.insertFlight(con, flight);
 
         if (result > 0) {
-
             commit(con);
         } else {
             rollback(con);
@@ -61,5 +60,67 @@ public class FlightService {
         close(con);
 
         return exists;
+    }
+
+    public boolean existsFlight(int code) {
+
+        Connection con = getConnection();
+
+        boolean exists = flightDAO.existsFlight(con, code);
+
+        close(con);
+
+        return exists;
+    }
+
+    public boolean updateFlightInfo(FlightDTO flight) {
+
+        Connection con = getConnection();
+
+        int result = flightDAO.updateFlightInfo(con, flight);
+
+        if (result > 0) {
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result > 0;
+    }
+
+    public boolean updateFlightSchedule(FlightDTO flight) {
+
+        Connection con = getConnection();
+
+        int result = flightDAO.updateFlightSchedule(con, flight);
+
+        if (result > 0) {
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result > 0;
+    }
+
+    public boolean updateFlightPrice(FlightDTO flight) {
+
+        Connection con = getConnection();
+
+        int result = flightDAO.updateFlightPrice(con, flight);
+
+        if (result > 0) {
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result > 0;
     }
 }
