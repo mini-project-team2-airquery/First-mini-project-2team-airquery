@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
 
@@ -100,6 +102,93 @@ public class SeatDAO {
     }
 
     /*
+     * 특정 항공편의 예약 가능한 좌석 조회 메서드
+     * 사용자가 입력한 항공편번호와 같은 좌석 중 예약되지 않은 좌석만 조회한다.
+     */
+    public List<SeatDTO> selectAvailableSeatsByFlightCode(Connection con, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        List<SeatDTO> seatList = new ArrayList<>();
+
+        String query = "SELECT seat_code, flight_code, seat_id, flight_class, " +
+                "additional_amount, is_reserved " +
+                "FROM tbl_seat " +
+                "WHERE flight_code = ? " +
+                "AND is_reserved = false " +
+                "ORDER BY seat_code";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, flightCode);
+
+            rset = pstmt.executeQuery();
+
+            while (rset.next()) {
+                SeatDTO seat = new SeatDTO();
+
+                seat.setSeatCode(rset.getInt("seat_code"));
+                seat.setFlightCode(rset.getInt("flight_code"));
+                seat.setSeatId(rset.getString("seat_id"));
+                seat.setFlightClass(rset.getString("flight_class"));
+                seat.setAdditionalAmount(rset.getInt("additional_amount"));
+                seat.setReserved(rset.getBoolean("is_reserved"));
+
+                seatList.add(seat);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return seatList;
+    }
+
+    /*
+     * 회원의 예매 중 아직 좌석을 선택하지 않은 예매 목록을 조회하는 메서드
+     * Map의 key는 예매번호, value는 항공편번호이다.
+     */
+    public Map<Integer, Integer> selectReservationsWithoutSeat(Connection con, int memberCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        Map<Integer, Integer> reservationMap = new LinkedHashMap<>();
+
+        String query = "SELECT reservation_code, flight_code " +
+                "FROM tbl_reservation " +
+                "WHERE member_code = ? " +
+                "AND seat_code IS NULL " +
+                "ORDER BY reservation_code";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, memberCode);
+
+            rset = pstmt.executeQuery();
+
+            while (rset.next()) {
+                reservationMap.put(
+                        rset.getInt("reservation_code"),
+                        rset.getInt("flight_code")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return reservationMap;
+    }
+
+    /*
      * 좌석 예약 메서드
      * 사용자가 입력한 좌석번호의 is_reserved 값을 true로 변경한다.
      */
@@ -163,6 +252,217 @@ public class SeatDAO {
 
             pstmt.setInt(1, seatCode);
             pstmt.setInt(2, flightCode);
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /*
+     * 예매 테이블에 선택한 좌석번호를 넣는 메서드
+     * 같은 항공편 예매 중 seat_code가 비어 있는 예매 하나에 좌석번호를 저장한다.
+     */
+    public int updateReservationSeatCode(Connection con, int memberCode, int reservationCode, int seatCode, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = "UPDATE tbl_reservation " +
+                "SET seat_code = ? " +
+                "WHERE reservation_code = ? " +
+                "AND member_code = ? " +
+                "AND flight_code = ? " +
+                "AND seat_code IS NULL";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, seatCode);
+            pstmt.setInt(2, reservationCode);
+            pstmt.setInt(3, memberCode);
+            pstmt.setInt(4, flightCode);
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /*
+     * 특정 항공편에 좌석 선택 안 된 예매가 있는지 확인하는 메서드
+     * tbl_reservation에서 flight_code가 같고 seat_code가 NULL인 예매를 찾는다.
+     */
+    public boolean hasReservationWithoutSeat(Connection con, int memberCode, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        boolean result = false;
+
+        String query = "SELECT reservation_code " +
+                "FROM tbl_reservation " +
+                "WHERE member_code = ? " +
+                "AND flight_code = ? " +
+                "AND seat_code IS NULL";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, memberCode);
+            pstmt.setInt(2, flightCode);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                result = true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /*
+     * 특정 항공편에 이미 좌석 선택한 예매가 있는지 확인하는 메서드
+     * seat_code가 NULL이 아니면 이미 좌석을 선택했다는 뜻이다.
+     */
+    public boolean hasReservationWithSeat(Connection con, int memberCode, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        boolean result = false;
+
+        String query = "SELECT reservation_code " +
+                "FROM tbl_reservation " +
+                "WHERE member_code = ? " +
+                "AND flight_code = ? " +
+                "AND seat_code IS NOT NULL";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, memberCode);
+            pstmt.setInt(2, flightCode);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                result = true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /*
+     * 회원번호와 항공편번호로 현재 선택된 좌석번호를 조회하는 메서드
+     */
+    public int selectReservedSeatCode(Connection con, int memberCode, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        int seatCode = 0;
+
+        String query = "SELECT seat_code " +
+                "FROM tbl_reservation " +
+                "WHERE member_code = ? " +
+                "AND flight_code = ? " +
+                "AND seat_code IS NOT NULL " +
+                "ORDER BY reservation_code " +
+                "LIMIT 1";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, memberCode);
+            pstmt.setInt(2, flightCode);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                seatCode = rset.getInt("seat_code");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return seatCode;
+    }
+
+    /*
+     * 예매 테이블의 기존 좌석번호를 새 좌석번호로 변경하는 메서드
+     */
+    public int changeReservationSeatCode(Connection con, int memberCode, int oldSeatCode, int newSeatCode, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = "UPDATE tbl_reservation " +
+                "SET seat_code = ? " +
+                "WHERE member_code = ? " +
+                "AND flight_code = ? " +
+                "AND seat_code = ?";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, newSeatCode);
+            pstmt.setInt(2, memberCode);
+            pstmt.setInt(3, flightCode);
+            pstmt.setInt(4, oldSeatCode);
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /*
+     * 기존 좌석을 다시 예약 가능한 상태로 바꾸는 메서드
+     */
+    public int cancelSeatReservation(Connection con, int seatCode) {
+
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = "UPDATE tbl_seat " +
+                "SET is_reserved = false " +
+                "WHERE seat_code = ?";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, seatCode);
 
             result = pstmt.executeUpdate();
 
