@@ -6,6 +6,7 @@ import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
 import com.ohgiraffers.airquery.reservation.view.ResultView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -37,14 +38,20 @@ public class PaymentMenu {
 
             switch (choice) {
                 case 1:
+
+                    List<ReservationDTO> unpaidList = reservationController.getReservationsPaymentIsNull(memberCode);
                     // 미결제 예매 목록 출력
-                    reservationResultView.printReservationList(
-                            reservationController.getReservationsPaymentIsNull(memberCode)
-                    );
+                    reservationResultView.printReservationList(unpaidList);
 
                     System.out.println("결제하실 예매 번호를 입력해주세요: ");
                     int reservationCode = sc.nextInt();
                     sc.nextLine();
+
+                    if(!paymentController.isPayable(reservationCode, unpaidList)) {
+
+                        System.out.println("이미 결제되었거나, 존재하지 않는 예매 번호입니다.");
+                        continue;
+                    }
 
                     int paymentAmount = paymentController.getTotalPaymentAmount(reservationCode);
 

@@ -9,8 +9,17 @@ public class ReservationDTO {
     private int flightCode;             // 항공편번호
     private int seatCode;               // 좌석번호
     private boolean baggageCarrying;    // 수하물지참여부
+    private boolean isDeleted;          // 취소 여부
     private LocalDateTime createdAt;    // 최초생성일
     private LocalDateTime updatedAt;    // 최종수정일
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
 
     public int getReservationCode() {
         return reservationCode;

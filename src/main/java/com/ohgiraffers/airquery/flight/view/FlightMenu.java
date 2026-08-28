@@ -16,7 +16,7 @@ public class FlightMenu {
 
     private final FlightController flightController = new FlightController();
 
-    public void displayMenu(Scanner sc) {
+    public void displayAdminMenu(Scanner sc) {
         while (true) {
 
             System.out.println();
@@ -54,6 +54,40 @@ public class FlightMenu {
                     break;
 
                 case "9":
+                    System.out.println("메인 메뉴로 돌아갑니다.");
+                    return;
+
+                default:
+                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+                    break;
+            }
+        }
+    }
+
+    public void displayNormalMenu(Scanner sc) {
+        while (true) {
+
+            System.out.println();
+            System.out.println("===== 항공편 메뉴 =====");
+            System.out.println("1. 항공편 전체 조회");
+            System.out.println("2. 항공사별 조회");
+            System.out.println("9. 메인 메뉴로 돌아가기");
+            System.out.print("메뉴 선택 : ");
+
+            String input = sc.nextLine();
+
+            switch (input) {
+
+                case "1":
+                    selectAllFlight();
+                    break;
+
+                case "2":
+                    selectByAirline(sc);
+                    break;
+
+                case "9":
+                    System.out.println("메인 메뉴로 돌아갑니다.");
                     return;
 
                 default:

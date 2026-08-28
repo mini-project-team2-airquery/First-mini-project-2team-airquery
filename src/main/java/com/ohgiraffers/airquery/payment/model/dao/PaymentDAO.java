@@ -136,4 +136,31 @@ public class PaymentDAO {
 
         return paymentAmount;
     }
+
+    /* 결제 취소 */
+    public int deletePayment(Connection con, int reservationCode) {
+
+        PreparedStatement pstmt = null;
+        int rs = 0;
+
+        String query = "" +
+                "UPDATE tbl_payment " +
+                "SET refund_status = true " +
+                "WHERE reservation_code = ?" +
+                "";
+
+        try {
+
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, reservationCode);
+
+            rs = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+        }
+
+        return rs;
+    }
 }
