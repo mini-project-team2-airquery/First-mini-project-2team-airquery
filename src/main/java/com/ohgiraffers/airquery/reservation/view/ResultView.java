@@ -1,5 +1,6 @@
 package com.ohgiraffers.airquery.reservation.view;
 
+import com.ohgiraffers.airquery.baggage.model.dto.BaggageDTO;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDetailDTO;
 
@@ -69,9 +70,16 @@ public class ResultView {
             printDetailBorder('├', '┤');
         }
 
-        if(detail.getBaggageCode() != 0) {
-            printDetailRow("수하물번호", detail.getBaggageCode());
-            printDetailRow("수하물무게", detail.getBaggageWeight() + "kg");
+        List<BaggageDTO> baggageList = detail.getBaggageList();
+
+        if (baggageList != null && !baggageList.isEmpty()) {
+            for (int i = 0; i < baggageList.size(); i++) {
+
+                BaggageDTO baggage = baggageList.get(i);
+
+                printDetailRow((i + 1) + "번 수하물번호", baggage.getBaggageCode());
+                printDetailRow((i + 1) + "번 수하물무게", baggage.getBaggageWeight() + "kg");
+            }
         }
 
         printDetailBorder('└', '┘');
