@@ -79,12 +79,13 @@ public class Application {
             System.out.println("===================================");
             System.out.println("          항공 예약 시스템");
             System.out.println("===================================");
-            System.out.println("1. 항공사");
-            System.out.println("2. 항공편");
-            System.out.println("3. 예약");
-            System.out.println("4. 결제");
-            System.out.println("5. 수하물");
-            System.out.println("6. 좌석");
+            System.out.println("1. 회원 정보 관리");
+            System.out.println("2. 항공사");
+            System.out.println("3. 항공편");
+            System.out.println("4. 예약");
+            System.out.println("5. 결제");
+            System.out.println("6. 수하물");
+            System.out.println("7. 좌석");
             System.out.println("9. 로그아웃");
             System.out.println("=================================");
             System.out.print("메뉴 선택 : ");
@@ -94,26 +95,30 @@ public class Application {
             switch (input) {
 
                 case "1":
-                    airlineMenu(sc, loginMember);
+                    memberMenu(sc, loginMember);
                     break;
 
                 case "2":
-                    flightMenu(sc, loginMember);
+                    airlineMenu(sc, loginMember);
                     break;
 
                 case "3":
-                    reservationMenu(sc, loginMember);
+                    flightMenu(sc, loginMember);
                     break;
 
                 case "4":
-                    paymentMenu(sc, loginMember);
+                    reservationMenu(sc, loginMember);
                     break;
 
                 case "5":
-                    baggageMenu(sc, loginMember);
+                    paymentMenu(sc, loginMember);
                     break;
 
                 case "6":
+                    baggageMenu(sc, loginMember);
+                    break;
+
+                case "7":
                     seatMenu(sc, loginMember);
                     break;
 
@@ -127,6 +132,26 @@ public class Application {
             }
         }
     }
+
+
+    // =================  회원 정보 관리 =================
+
+    public static void memberMenu(Scanner sc, MemberDTO loginMember) {
+        MemberMenu memberMenu = new MemberMenu();
+
+        if("Admin".equals(loginMember.getMemberAuth())){
+
+            memberMenu.displayAdminMenu(sc, loginMember);
+        } else if("Member".equals(loginMember.getMemberAuth())){
+
+            memberMenu.displayNormalMenu(sc, loginMember);
+        } else {
+            System.out.println("알수없는 회원입니다.");
+        }
+
+    }
+
+
 
     // ================= 항공사 =================
 
@@ -154,9 +179,10 @@ public class Application {
 
         if("Admin".equals(loginMember.getMemberAuth())){
 
-            flightMenu.displayMenu(sc);
+            flightMenu.displayAdminMenu(sc);
         } else if("Member".equals(loginMember.getMemberAuth())){
 
+            flightMenu.displayNormalMenu(sc);
         } else {
             System.out.println("알수없는 회원입니다.");
         }
