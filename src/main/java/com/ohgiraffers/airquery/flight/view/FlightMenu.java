@@ -1,5 +1,6 @@
 package com.ohgiraffers.airquery.flight.view;
 
+import com.ohgiraffers.airquery.airline.menu.AirlineMenu;
 import com.ohgiraffers.airquery.flight.controller.FlightController;
 import com.ohgiraffers.airquery.flight.model.dto.FlightDTO;
 
@@ -97,6 +98,10 @@ public class FlightMenu {
     }
 
     public void selectByAirline(Scanner sc) {
+
+        AirlineMenu airlineMenu = new AirlineMenu();
+        airlineMenu.selectAllAirlines();
+
         System.out.print("조회할 항공사명을 입력하세요: ");
 
         String airlineName = sc.nextLine();
@@ -139,6 +144,9 @@ public class FlightMenu {
         try {
             System.out.println();
             System.out.println("===== 항공편 등록 =====");
+
+            AirlineMenu airlineMenu = new AirlineMenu();
+            airlineMenu.selectAllAirlines();
 
             System.out.print("항공사 번호: ");
             String airlineCodeInput = sc.nextLine().trim();
