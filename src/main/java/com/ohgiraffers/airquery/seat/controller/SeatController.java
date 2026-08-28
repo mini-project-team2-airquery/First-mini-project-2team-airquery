@@ -24,10 +24,16 @@ public class SeatController {
         return seatService.selectAvailableSeats();
     }
 
-    // 특정 좌석 예약하는 메서드
-    public boolean reserveSeat(int seatCode) {
+    // 특정 항공편의 좌석을 예약하는 메서드
+    public boolean reserveSeat(int seatCode, int flightCode) {
 
-        return seatService.reserveSeat(seatCode);
+        return seatService.reserveSeat(seatCode, flightCode);
+    }
+
+    // 특정 항공편에 좌석 선택 안 된 예매가 있는지 확인하는 메서드
+    public boolean hasReservationWithoutSeat(int flightCode) {
+
+        return seatService.hasReservationWithoutSeat(flightCode);
     }
 
 }

@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Scanner;
 
 
+// 사용자가 보게 되는 좌석 관련 클래스
 public class SeatMenu {
 
+    // 화면의 요청을 넘겨줄 컴트롤러와 메시지 출력을 점담할 뷰 객체를 생성
     private final SeatController seatController = new SeatController();
     private final SeatView seatView = new SeatView();
 
+    // 메인화면
     public void displayMenu(Scanner sc) {
 
         while (true) {
@@ -40,6 +43,7 @@ public class SeatMenu {
         }
     }
 
+    // 좌석 조회 메뉴
     private void selectAllSeats(Scanner sc) {
 
         List<SeatDTO> seatList = seatController.getAllSeats();
@@ -66,6 +70,7 @@ public class SeatMenu {
         }
     }
 
+    // 빈좌석만 필러팅해서 보여주는 메서드
     private void selectAvailableSeats() {
 
         List<SeatDTO> seatList = seatController.getAvailableSeats();
@@ -73,7 +78,27 @@ public class SeatMenu {
         seatView.displayAvailableSeatList(seatList);
     }
 
+    // 비행기 편면과 좌석 번호를 입력해서 예약하는 메서드
     private void reserveSeat(Scanner sc) {
+
+        seatView.displayInputFlightCodeMessage();
+        String flightCodeInput = sc.nextLine();
+
+        if (!flightCodeInput.matches("[0-9]+")) {
+            seatView.displayNumberOnlyMessage();
+            backToSeatMenu(sc);
+            return;
+        }
+
+        int flightCode = Integer.parseInt(flightCodeInput);
+
+        boolean hasReservation = seatController.hasReservationWithoutSeat(flightCode);
+
+        if (!hasReservation) {
+            seatView.displayNeedReservationFirstMessage();
+            backToSeatMenu(sc);
+            return;
+        }
 
         seatView.displayInputSeatCodeMessage();
         String seatCodeInput = sc.nextLine();
@@ -86,12 +111,13 @@ public class SeatMenu {
 
         int seatCode = Integer.parseInt(seatCodeInput);
 
-        boolean isSuccess = seatController.reserveSeat(seatCode);
+        boolean isSuccess = seatController.reserveSeat(seatCode, flightCode);
 
         seatView.displayReserveSeatResult(isSuccess);
         backToSeatMenu(sc);
     }
 
+    // 상세정보를 수정하는 메서드
     private void updateSeat(Scanner sc) {
 
         seatView.displayInputUpdateSeatCodeMessage();
@@ -148,6 +174,7 @@ public class SeatMenu {
 
     }
 
+    // 안전하게 메뉴 돌려줌
     private void backToSeatMenu(Scanner sc) {
 
         while (true) {

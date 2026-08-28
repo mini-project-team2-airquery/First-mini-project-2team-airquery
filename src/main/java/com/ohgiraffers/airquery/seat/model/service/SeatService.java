@@ -44,13 +44,18 @@ public class SeatService {
      * 좌석 예약 서비스 메서드
      * DB 연결을 만들고, DAO에게 좌석 예약
      */
-    public boolean reserveSeat(int seatCode) {
+    public boolean reserveSeat(int seatCode, int flightCode) {
 
         Connection con = getConnection();
 
-        int result = seatDAO.reserveSeat(con, seatCode);
+        int seatResult = seatDAO.reserveSeatForFlight(con, seatCode, flightCode);
+        int reservationResult = 0;
 
-        if (result > 0) {
+        if (seatResult > 0) {
+            reservationResult = seatDAO.updateReservationSeatCode(con, seatCode, flightCode);
+        }
+
+        if (seatResult > 0 && reservationResult > 0) {
             commit(con);
         } else {
             rollback(con);
@@ -58,6 +63,20 @@ public class SeatService {
 
         close(con);
 
-        return result > 0;
+        return seatResult > 0 && reservationResult > 0;
+    }
+
+    /*
+     * 특정 항공편에 좌석 선택 안 된 예매가 있는지 확인하는 메서드
+     */
+    public boolean hasReservationWithoutSeat(int flightCode) {
+
+        Connection con = getConnection();
+
+        boolean result = seatDAO.hasReservationWithoutSeat(con, flightCode);
+
+        close(con);
+
+        return result;
     }
 }

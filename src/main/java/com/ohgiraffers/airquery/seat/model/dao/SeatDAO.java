@@ -174,4 +174,73 @@ public class SeatDAO {
 
         return result;
     }
+
+    /*
+     * 예매 테이블에 선택한 좌석번호를 넣는 메서드
+     * 같은 항공편 예매 중 seat_code가 비어 있는 예매 하나에 좌석번호를 저장한다.
+     */
+    public int updateReservationSeatCode(Connection con, int seatCode, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = "UPDATE tbl_reservation " +
+                "SET seat_code = ? " +
+                "WHERE flight_code = ? " +
+                "AND seat_code IS NULL " +
+                "ORDER BY reservation_code " +
+                "LIMIT 1";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, seatCode);
+            pstmt.setInt(2, flightCode);
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /*
+     * 특정 항공편에 좌석 선택 안 된 예매가 있는지 확인하는 메서드
+     * tbl_reservation에서 flight_code가 같고 seat_code가 NULL인 예매를 찾는다.
+     */
+    public boolean hasReservationWithoutSeat(Connection con, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        boolean result = false;
+
+        String query = "SELECT reservation_code " +
+                "FROM tbl_reservation " +
+                "WHERE flight_code = ? " +
+                "AND seat_code IS NULL";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, flightCode);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                result = true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return result;
+    }
 }

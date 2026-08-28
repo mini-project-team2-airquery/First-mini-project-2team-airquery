@@ -150,4 +150,8 @@ public class SeatView {
     public void displayInvalidMenuMessage() {
         System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
     }
+
+    public void displayNeedReservationFirstMessage() {
+        System.out.println("예매 먼저 진행 후, 좌석 선택해주세요");
+    }
 }
