@@ -25,6 +25,10 @@ public class SeatView {
         System.out.println("회원번호는 숫자만 입력해야 합니다.");
     }
 
+    public void displayUnknownMemberMessage() {
+        System.out.println("알수없는 회원입니다.");
+    }
+
     public void displayReservationsWithoutSeat(Map<Integer, Integer> reservationMap) {
         System.out.println();
         System.out.println("===== 좌석 선택 가능한 예매 목록 =====");
@@ -198,5 +202,13 @@ public class SeatView {
         } else {
             System.out.println("좌석 변경에 실패했습니다. 이미 예약된 좌석이거나 없는 좌석번호입니다.");
         }
+    }
+
+    public void displayNeedRepaymentMessage() {
+        System.out.println("상위 등급 좌석으로 변경하려면 결제 취소 후 다시 진행해주세요.");
+    }
+
+    public void displayOnlySameClassChangeMessage() {
+        System.out.println("좌석 변경은 같은 등급 좌석으로만 가능합니다.");
     }
 }

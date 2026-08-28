@@ -239,6 +239,7 @@ public class Application {
             seatMenu.displayMenu(sc);
         } else if("Member".equals(loginMember.getMemberAuth())){
 
+            seatMenu.displayMenu(sc, loginMember.getMemberCode());
         } else {
             System.out.println("알수없는 회원입니다.");
         }

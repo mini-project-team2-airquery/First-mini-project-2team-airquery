@@ -159,4 +159,32 @@ public class SeatService {
         return newSeatResult > 0 && reservationResult > 0 && oldSeatResult > 0;
     }
 
+    /*
+     * 회원이 현재 선택한 좌석의 등급을 조회하는 메서드
+     */
+    public String getSelectedSeatClass(int memberCode, int flightCode) {
+
+        Connection con = getConnection();
+
+        String flightClass = seatDAO.selectSelectedSeatClass(con, memberCode, flightCode);
+
+        close(con);
+
+        return flightClass;
+    }
+
+    /*
+     * 새로 선택하려는 좌석의 등급을 조회하는 메서드
+     */
+    public String getSeatClass(int seatCode, int flightCode) {
+
+        Connection con = getConnection();
+
+        String flightClass = seatDAO.selectSeatClass(con, seatCode, flightCode);
+
+        close(con);
+
+        return flightClass;
+    }
+
 }

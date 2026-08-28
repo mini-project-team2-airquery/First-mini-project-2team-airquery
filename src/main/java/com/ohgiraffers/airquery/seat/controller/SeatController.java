@@ -61,4 +61,16 @@ public class SeatController {
         return seatService.changeSeat(memberCode, newSeatCode, flightCode);
     }
 
+    // 회원이 현재 선택한 좌석의 등급을 조회하는 메서드
+    public String getSelectedSeatClass(int memberCode, int flightCode) {
+
+        return seatService.getSelectedSeatClass(memberCode, flightCode);
+    }
+
+    // 새로 선택하려는 좌석의 등급을 조회하는 메서드
+    public String getSeatClass(int seatCode, int flightCode) {
+
+        return seatService.getSeatClass(seatCode, flightCode);
+    }
+
 }
