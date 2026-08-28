@@ -30,16 +30,4 @@ public class SeatController {
         return seatService.reserveSeat(seatCode);
     }
 
-    // 좌석 정보 변경하는 메서드
-    public boolean updateSeat(SeatDTO seatDTO) {
-
-    return seatService.updateSeat(seatDTO);
-    }
-
 }
-//    // 좌석 정보 변경하는 메서드
-//    public boolean updateSeat(SeatDTO seat) {
-//
-//        return seatService.updateSeat(seat);
-//    }
-//}
