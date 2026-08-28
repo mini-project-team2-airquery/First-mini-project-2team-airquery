@@ -24,6 +24,7 @@ public class FlightMenu {
             System.out.println("2. 항공사별 조회");
             System.out.println("3. 항공편 생성");
             System.out.println("4. 항공편 수정");
+            System.out.println("5. 항공편 삭제");
             System.out.println("9. 메인 메뉴로 돌아가기");
             System.out.print("메뉴 선택 : ");
 
@@ -45,6 +46,10 @@ public class FlightMenu {
 
                 case "4":
                     displayUpdateMenu(sc);
+                    break;
+
+                case "5":
+                    deleteFlight(sc);
                     break;
 
                 case "9":
@@ -464,6 +469,57 @@ public class FlightMenu {
 
         } catch (NumberFormatException e) {
             System.out.println("항공편 번호와 티켓 가격은 숫자로 입력해야 합니다.");
+
+        }
+    }
+
+    private void deleteFlight(Scanner sc) {
+
+        try {
+            System.out.println();
+            System.out.println("===== 항공편 삭제 =====");
+
+            System.out.print("항공편 번호: ");
+            String codeInput = sc.nextLine().trim();
+
+            // 모든 입력값의 필수 입력 여부 확인
+            if (codeInput.isEmpty()) {
+
+                System.out.println("항공편 번호를 반드시 입력해야 합니다.");
+                return;
+            }
+
+            int code = Integer.parseInt(codeInput);
+
+            if (code <= 0) {
+                System.out.println("항공편 번호는 1 이상이어야 합니다.");
+                return;
+            }
+
+            if (!flightController.existsFlight(code)) {
+                System.out.println("존재하지 않는 항공편 번호입니다.");
+                return;
+            }
+
+            if(flightController.existsReservation(code)) {
+                System.out.println("예매 내역이 존재하는 항공편은 삭제할 수 없습니다.");
+                return;
+            }
+
+            FlightDTO flight = new FlightDTO();
+
+            flight.setCode(code);
+
+            boolean result = flightController.deleteFlight(flight);
+
+            if (result) {
+                System.out.println("항공편이 성공적으로 삭제되었습니다.");
+            } else {
+                System.out.println("항공편 삭제가 실패했습니다.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("항공편 번호는 숫자로 입력해야 합니다.");
 
         }
     }
