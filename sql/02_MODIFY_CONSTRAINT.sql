@@ -1,2 +1,2 @@
-sALTER TABLE tbl_reservation
+ALTER TABLE tbl_reservation
     ADD COLUMN is_deleted BOOLEAN NOT NULL DEFAULT FALSE COMMENT '취소여부';
