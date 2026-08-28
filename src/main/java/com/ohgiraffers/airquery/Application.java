@@ -128,22 +128,27 @@ public class Application {
         }
     }
 
+
     // ================= 항공사 =================
 
     public static void airlineMenu(Scanner sc, MemberDTO loginMember) {
 
         AirlineMenu airlineMenu = new AirlineMenu();
 
-        if("Admin".equals(loginMember.getMemberAuth())){
+        if ("Admin".equals(loginMember.getMemberAuth())) {
 
-            airlineMenu.displayMenu(sc);
-        } else if("Member".equals(loginMember.getMemberAuth())){
+            airlineMenu.displayAdminMenu(sc);
+
+        } else if ("Member".equals(loginMember.getMemberAuth())) {
+
+            airlineMenu.displayNormalMenu(sc);
 
         } else {
+
             System.out.println("알수없는 회원입니다.");
         }
-
     }
+
 
 
     // ================= 항공편 =================
