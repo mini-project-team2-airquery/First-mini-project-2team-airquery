@@ -41,7 +41,10 @@ public class Application {
                 case "1":
 
                     MemberDTO loginMember = Login.login(sc);
-                    mainMenu(sc, loginMember);
+                    if (loginMember != null) {
+                        mainMenu(sc, loginMember);
+                    }
+
 
                     break;
 
