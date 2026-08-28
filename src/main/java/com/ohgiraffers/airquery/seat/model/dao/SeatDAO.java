@@ -13,9 +13,9 @@ import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
 
 public class SeatDAO {
     /*
-    * 좌석 전체 조회 메서드
-    * 좌석 정보를 조회
-    */
+     * 좌석 전체 조회 메서드
+     * 좌석 정보를 조회
+     */
     public List<SeatDTO> selectAllSeats(Connection con) {
 
         PreparedStatement pstmt = null;
@@ -142,31 +142,27 @@ public class SeatDAO {
     }
 
     /*
-     * 좌석 변경 메서드
-     * seat_code로 변경할 좌석을 찾고, 나머지 좌석 정보를 수정한다.
+     * 예매 등록에서 사용하는 좌석 예약 메서드
+     * 선택한 좌석이 선택한 항공편의 좌석이고, 아직 예약되지 않은 경우에만 예약한다.
      */
-    public int updateSeat(Connection con, SeatDTO seat) {
+    public int reserveSeatForFlight(Connection con, int seatCode, int flightCode) {
 
         PreparedStatement pstmt = null;
-        int result = 0;
+        int result = 0; // 성공하면 1, 실패하면 0으로 담김
 
+        /* 좌석(?번호) 과 비행기(?코드)가 일치시 아직 예약 되지않은 상태(False)인 데이터를 찾아서
+            예약상태(True)를 변경 */
         String query = "UPDATE tbl_seat " +
-                "SET flight_code = ?, " +
-                "seat_id = ?, " +
-                "flight_class = ?, " +
-                "additional_amount = ?, " +
-                "is_reserved = ? " +
-                "WHERE seat_code = ?";
+                "SET is_reserved = true " +
+                "WHERE seat_code = ? " +
+                "AND flight_code = ? " +
+                "AND is_reserved = false";
 
         try {
             pstmt = con.prepareStatement(query);
 
-            pstmt.setInt(1, seat.getFlightCode());
-            pstmt.setString(2, seat.getSeatId());
-            pstmt.setString(3, seat.getFlightClass());
-            pstmt.setInt(4, seat.getAdditionalAmount());
-            pstmt.setBoolean(5, seat.isReserved());
-            pstmt.setInt(6, seat.getSeatCode());
+            pstmt.setInt(1, seatCode);
+            pstmt.setInt(2, flightCode);
 
             result = pstmt.executeUpdate();
 

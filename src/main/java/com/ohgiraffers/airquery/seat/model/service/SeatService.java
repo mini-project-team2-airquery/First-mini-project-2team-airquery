@@ -60,26 +60,4 @@ public class SeatService {
 
         return result > 0;
     }
-
-    /*
-     * 좌석 변경 서비스 메서드
-     * DAO에게 좌석 변경을 요청하고 성공하면 commit, 실패하면 rollback 한다.
-     */
-    public boolean updateSeat(SeatDTO seat) {
-
-        Connection con = getConnection();
-
-        int result = seatDAO.updateSeat(con, seat);
-
-        if (result > 0) {
-            commit(con);
-        } else {
-            rollback(con);
-        }
-
-        close(con);
-
-        return result > 0;
-    }
-
 }

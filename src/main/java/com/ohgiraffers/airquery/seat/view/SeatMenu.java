@@ -30,10 +30,6 @@ public class SeatMenu {
                     reserveSeat(sc);
                     break;
 
-                case "3":
-                    updateSeat(sc);
-                    break;
-
                 case "9":
                     return;
 
@@ -149,10 +145,7 @@ public class SeatMenu {
         seat.setAdditionalAmount(Integer.parseInt(additionalAmountInput));
         seat.setReserved(Boolean.parseBoolean(reservedInput));
 
-        boolean isSuccess = seatController.updateSeat(seat);
 
-        seatView.displayUpdateSeatResult(isSuccess);
-        backToSeatMenu(sc);
     }
 
     private void backToSeatMenu(Scanner sc) {

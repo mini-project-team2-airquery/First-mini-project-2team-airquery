@@ -11,7 +11,6 @@ public class SeatView {
         System.out.println("===== 좌석 메뉴 =====");
         System.out.println("1. 좌석 전체 조회");
         System.out.println("2. 좌석 예약");
-        System.out.println("3. 좌석 변경");
         System.out.println("9. 메인 메뉴로 돌아가기");
         System.out.print("메뉴 선택 : ");
     }
@@ -146,14 +145,6 @@ public class SeatView {
 
     public void displayBooleanOnlyMessage() {
         System.out.println("예약여부는 true 또는 false만 입력해야 합니다.");
-    }
-
-    public void displayUpdateSeatResult(boolean isSuccess) {
-        if (isSuccess) {
-            System.out.println("좌석 정보 변경이 완료되었습니다.");
-        } else {
-            System.out.println("좌석 정보 변경에 실패했습니다. 없는 좌석번호일 수 있습니다.");
-        }
     }
 
     public void displayInvalidMenuMessage() {
