@@ -63,6 +63,8 @@ CREATE TABLE tbl_seat
     is_reserved       BOOLEAN     NOT NULL DEFAULT FALSE COMMENT '선점여부',
     CONSTRAINT pk_seat_code PRIMARY KEY (seat_code),
     CONSTRAINT uk_seat_flight_seat_id UNIQUE (flight_code, seat_id),
+    CONSTRAINT chk_additional_amount
+        CHECK (additional_amount IN (0, 500000, 2000000)),
     CONSTRAINT fk_seat_flight_code
         FOREIGN KEY (flight_code) REFERENCES tbl_flight (flight_code)
 ) ENGINE = InnoDB COMMENT = '좌석';
@@ -251,21 +253,21 @@ INSERT INTO tbl_seat
     flight_class, additional_amount, is_reserved
 )
 VALUES
-    (1, 1, '1A',  'FIRST',    300000, TRUE),
-    (2, 2, '2A',  'BUSINESS', 150000, TRUE),
+    (1, 1, '1A',  'FIRST',    2000000, TRUE),
+    (2, 2, '2A',  'BUSINESS', 500000, TRUE),
     (3, 3, '10A', 'ECONOMY',       0, TRUE),
     (4, 4, '10B', 'ECONOMY',       0, TRUE),
-    (5, 5, '5A',  'BUSINESS', 150000, TRUE),
+    (5, 5, '5A',  'BUSINESS', 500000, TRUE),
     (6, 6, '12C', 'ECONOMY',       0, TRUE),
     (7, 7, '12D', 'ECONOMY',       0, TRUE),
     (8, 8, '15A', 'ECONOMY',       0, TRUE),
-    (9, 9, '3A',  'BUSINESS', 250000, TRUE),
+    (9, 9, '3A',  'BUSINESS', 500000, TRUE),
     (10, 10, '18F', 'ECONOMY',     0, FALSE),
-    (11, 1, '1B',  'FIRST',    300000, FALSE),
-    (12, 2, '2B',  'BUSINESS', 150000, FALSE),
+    (11, 1, '1B',  'FIRST',    2000000, FALSE),
+    (12, 2, '2B',  'BUSINESS', 500000, FALSE),
     (13, 3, '10B', 'ECONOMY',       0, FALSE),
     (14, 4, '10C', 'ECONOMY',       0, FALSE),
-    (15, 5, '5B',  'BUSINESS', 150000, FALSE);
+    (15, 5, '5B',  'BUSINESS', 500000, FALSE);
 
 
 -- =====================================================
@@ -324,15 +326,15 @@ INSERT INTO tbl_payment
     first_created_date, last_modified_date
 )
 VALUES
-    (1,  1, 320000, 'CARD',      FALSE, '2026-08-26', '2026-08-26'),
-    (2,  2, 280000, 'CARD',      FALSE, '2026-08-26', '2026-08-26'),
-    (3,  3, 180000, 'KAKAO_PAY', FALSE, '2026-08-26', '2026-08-26'),
-    (4,  4, 410000, 'CARD',      FALSE, '2026-08-27', '2026-08-27'),
-    (5,  5, 260000, 'NAVER_PAY', FALSE, '2026-08-27', '2026-08-27'),
-    (6,  6, 230000, 'CARD',      FALSE, '2026-08-28', '2026-08-28'),
-    (7,  7, 210000, 'KAKAO_PAY', TRUE,  '2026-08-28', '2026-08-29'),
-    (8,  8, 170000, 'CARD',      FALSE, '2026-08-29', '2026-08-29'),
-    (9,  9, 980000, 'CARD',      FALSE, '2026-08-29', '2026-08-29'),
-    (10, 10, 240000, 'NAVER_PAY', FALSE, '2026-08-30', '2026-08-30');
+    (1,  1, 2320000, 'CARD',       FALSE, '2026-08-26', '2026-08-26'),
+    (2,  2,  780000, 'CARD',       FALSE, '2026-08-26', '2026-08-26'),
+    (3,  3,  180000, 'KAKAO_PAY',  FALSE, '2026-08-26', '2026-08-26'),
+    (4,  4,  410000, 'CARD',       FALSE, '2026-08-27', '2026-08-27'),
+    (5,  5,  760000, 'NAVER_PAY',  FALSE, '2026-08-27', '2026-08-27'),
+    (6,  6,  230000, 'CARD',       FALSE, '2026-08-28', '2026-08-28'),
+    (7,  7,  210000, 'KAKAO_PAY',  TRUE,  '2026-08-28', '2026-08-29'),
+    (8,  8,  170000, 'CARD',       FALSE, '2026-08-29', '2026-08-29'),
+    (9,  9, 1480000, 'CARD',       FALSE, '2026-08-29', '2026-08-29'),
+    (10, 10, 240000, 'NAVER_PAY',  FALSE, '2026-08-30', '2026-08-30');
 
 COMMIT;
