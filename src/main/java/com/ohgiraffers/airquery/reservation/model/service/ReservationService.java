@@ -34,6 +34,18 @@ public class ReservationService {
         return reservationList;
     }
 
+    /* 결제 안된 예매 목록 조회 */
+    public List<ReservationDTO> selectReservationsPaymentIsNull(int memberCode) {
+
+        Connection con = getConnection();
+
+        List<ReservationDTO> reservationList = reservationDAO.findByPaymentIsNull(con, memberCode);
+
+        close(con);
+
+        return reservationList;
+    }
+
     /* 예매 상세 내역 조회 */
     public ReservationDetailDTO findReservationDetail(int reservationCode, int memberCode) {
 
@@ -43,6 +55,11 @@ public class ReservationService {
 
         // 예매(티켓), 결제, 수하물, 좌석
         ReservationDTO reservation = reservationDAO.findById(con, reservationCode, memberCode);
+        if(reservation == null) {
+            close(con);
+            return null;
+        }
+
         PaymentDTO payment = paymentDAO.findByReservation(con, reservationCode);
 
         close(con);
@@ -70,4 +87,27 @@ public class ReservationService {
 
         return result;
     }
+
+    /* 예매 취소 */
+    public int cancleReservation(int reservationCode, int memberCode) {
+
+        Connection con = getConnection();
+
+        ReservationDTO dto = reservationDAO.findById(con, reservationCode, memberCode);
+
+        // 예매 정보, 결제 정보, 수하물 정보, 좌석 정보 모두 취소처리되어야 함
+        int result = reservationDAO.deleteReservation(con, reservationCode);
+
+        // 성공하면 트랜잭션 커밋
+        if (result == 1) {
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result;
+    }
+
 }

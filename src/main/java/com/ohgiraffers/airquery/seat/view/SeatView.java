@@ -3,6 +3,7 @@ package com.ohgiraffers.airquery.seat.view;
 import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public class SeatView {
 
@@ -14,6 +15,33 @@ public class SeatView {
         System.out.println("3. 좌석 변경");
         System.out.println("9. 메인 메뉴로 돌아가기");
         System.out.print("메뉴 선택 : ");
+    }
+
+    public void displayInputMemberCodeMessage() {
+        System.out.print("로그인한 회원번호를 입력하세요 : ");
+    }
+
+    public void displayMemberCodeNumberOnlyMessage() {
+        System.out.println("회원번호는 숫자만 입력해야 합니다.");
+    }
+
+    public void displayReservationsWithoutSeat(Map<Integer, Integer> reservationMap) {
+        System.out.println();
+        System.out.println("===== 좌석 선택 가능한 예매 목록 =====");
+
+        for (Map.Entry<Integer, Integer> reservation : reservationMap.entrySet()) {
+            System.out.println("예매번호 : " + reservation.getKey());
+            System.out.println("항공편번호 : " + reservation.getValue());
+            System.out.println("---------------------------------");
+        }
+    }
+
+    public void displayInputReservationCodeMessage() {
+        System.out.print("좌석을 선택할 예매번호를 입력하세요 : ");
+    }
+
+    public void displayInvalidReservationCodeMessage() {
+        System.out.println("선택 가능한 예매번호가 아닙니다.");
     }
 
     public void displaySeatList(List<SeatDTO> seatList) {
@@ -148,15 +176,27 @@ public class SeatView {
         System.out.println("예약여부는 true 또는 false만 입력해야 합니다.");
     }
 
-    public void displayUpdateSeatResult(boolean isSuccess) {
-        if (isSuccess) {
-            System.out.println("좌석 정보 변경이 완료되었습니다.");
-        } else {
-            System.out.println("좌석 정보 변경에 실패했습니다. 없는 좌석번호일 수 있습니다.");
-        }
-    }
-
     public void displayInvalidMenuMessage() {
         System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
+    }
+
+    public void displayNeedReservationFirstMessage() {
+        System.out.println("예매 먼저 진행 후, 좌석 선택해주세요");
+    }
+
+    public void displayNeedSeatFirstMessage() {
+        System.out.println("먼저 좌석을 선택한 뒤 변경해주세요.");
+    }
+
+    public void displayInputNewSeatCodeMessage() {
+        System.out.print("새로 선택할 좌석번호를 입력하세요 : ");
+    }
+
+    public void displayChangeSeatResult(boolean isSuccess) {
+        if (isSuccess) {
+            System.out.println("좌석 변경이 완료되었습니다.");
+        } else {
+            System.out.println("좌석 변경에 실패했습니다. 이미 예약된 좌석이거나 없는 좌석번호입니다.");
+        }
     }
 }
