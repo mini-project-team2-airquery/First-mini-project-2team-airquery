@@ -18,8 +18,7 @@ public class ReservationMenu {
     private final ReservationController reservationController = new ReservationController();
     private final ResultView resultView = new ResultView();
 
-    //private final FlightMenu flightMenu = new FlightMenu();
-    private final FlightController flightController = new FlightController();
+    private final FlightMenu flightMenu = new FlightMenu();
 
     public void displayMenu(Scanner sc) {
 
@@ -84,8 +83,7 @@ public class ReservationMenu {
                     break;
                 case 3:
                     System.out.println("============== 항공편 리스트 =============");
-                    System.out.println(flightController.selectAllFlight());
-                    //flightMenu.selectAllFlight();
+                    flightMenu.selectAllFlight();
 
                     int selectedFlightCode;
                     boolean selectedBaggageCarrying = false;

@@ -34,6 +34,18 @@ public class ReservationService {
         return reservationList;
     }
 
+    /* 결제 안된 예매 목록 조회 */
+    public List<ReservationDTO> selectReservationsPaymentIsNull(int memberCode) {
+
+        Connection con = getConnection();
+
+        List<ReservationDTO> reservationList = reservationDAO.findByPaymentIsNull(con, memberCode);
+
+        close(con);
+
+        return reservationList;
+    }
+
     /* 예매 상세 내역 조회 */
     public ReservationDetailDTO findReservationDetail(int reservationCode, int memberCode) {
 
