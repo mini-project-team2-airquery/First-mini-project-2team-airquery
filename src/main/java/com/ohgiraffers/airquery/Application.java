@@ -179,9 +179,10 @@ public class Application {
 
         if("Admin".equals(loginMember.getMemberAuth())){
 
-            flightMenu.displayMenu(sc);
+            flightMenu.displayAdminMenu(sc);
         } else if("Member".equals(loginMember.getMemberAuth())){
 
+            flightMenu.displayNormalMenu(sc);
         } else {
             System.out.println("알수없는 회원입니다.");
         }
