@@ -204,7 +204,7 @@ public class Application {
             System.out.println("===== 관리자 메뉴 =====");
             System.out.println("관리자 : " + loginMember.getMemberName());
             System.out.println("---------------------------------");
-            System.out.println("1. 고객목록 조회");
+            System.out.println("1. 회원목록 조회");
             System.out.println("9. 로그아웃");
             System.out.println("---------------------------------");
             System.out.print("메뉴 선택 : ");
