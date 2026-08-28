@@ -49,4 +49,14 @@ public class FlightController {
 
         return flightService.updateFlightPrice(flight);
     }
+
+    public boolean existsReservation(int code) {
+
+        return flightService.existsReservation(code);
+    }
+
+    public boolean deleteFlight(FlightDTO flight) {
+
+        return flightService.deleteFlight(flight);
+    }
 }

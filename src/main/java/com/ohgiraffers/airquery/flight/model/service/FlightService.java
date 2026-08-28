@@ -123,4 +123,31 @@ public class FlightService {
 
         return result > 0;
     }
+
+    public boolean existsReservation(int code) {
+
+        Connection con = getConnection();
+
+        boolean exists = flightDAO.existsReservation(con, code);
+
+        close(con);
+
+        return exists;
+    }
+
+    public boolean deleteFlight(FlightDTO flight) {
+        Connection con = getConnection();
+
+        int result = flightDAO.deleteFlight(con, flight);
+
+        if (result > 0) {
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result > 0;
+    }
 }

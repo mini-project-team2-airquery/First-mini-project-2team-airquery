@@ -253,7 +253,6 @@ public class FlightDAO {
             JDBCTemplate.close(pstmt);
         }
 
-
         return result;
     }
 
@@ -286,7 +285,6 @@ public class FlightDAO {
             JDBCTemplate.close(pstmt);
         }
 
-
         return result;
     }
 
@@ -317,6 +315,61 @@ public class FlightDAO {
             JDBCTemplate.close(pstmt);
         }
 
+        return result;
+    }
+
+    public boolean existsReservation(Connection con, int code) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+
+        boolean exists = false;
+
+        String query = prop.getProperty("existsReservation");
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, code);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                exists = rset.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(rset);
+            JDBCTemplate.close(pstmt);
+        }
+
+        return exists;
+    }
+
+    public int deleteFlight(Connection con, FlightDTO flight) {
+
+        PreparedStatement pstmt = null;
+
+        int result = 0;
+
+        String query = prop.getProperty("deleteFlight");
+
+        try {
+
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, flight.getCode());
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("예매 내역이 존재하는 항공편은 삭제할 수 없습니다.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JDBCTemplate.close(pstmt);
+        }
 
         return result;
     }

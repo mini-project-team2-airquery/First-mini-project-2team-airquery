@@ -117,6 +117,12 @@
             flight_code = ?
     </entry>
 
+    <entry key="existsReservation">
+        SELECT COUNT(*)
+        FROM tbl_reservation
+        WHERE flight_code = ?
+    </entry>
+
     <entry key="deleteFlight">
         DELETE
         FROM tbl_flight
