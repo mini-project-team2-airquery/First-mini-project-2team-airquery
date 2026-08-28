@@ -68,61 +68,29 @@ public class AirlineDAO {
     public int insertAirline(Connection con, AirlineDTO airline) {
 
         PreparedStatement pstmt = null;
-        ResultSet rset = null;
         int result = 0;
-
-        // 비어 있는 가장 작은 항공사 번호를 저장
-        int airlineCode = 1;
-
-        // 현재 사용하지 않는 가장 작은 항공사 번호 조회
-        String findSql =
-                "SELECT MIN(t1.airline_code + 1) AS airline_code " +
-                        "FROM ( " +
-                        "SELECT 0 AS airline_code " +
-                        "UNION ALL " +
-                        "SELECT airline_code FROM tbl_airline " +
-                        ") t1 " +
-                        "LEFT JOIN tbl_airline t2 " +
-                        "ON t1.airline_code + 1 = t2.airline_code " +
-                        "WHERE t2.airline_code IS NULL";
 
         String sql =
                 "INSERT INTO tbl_airline " +
-                        "(airline_code, airline_name, customer_service_number) " +
-                        "VALUES (?, ?, ?)";
+                        "(airline_name, customer_service_number) " +
+                        "VALUES (?, ?)";
 
         try {
-
-            // 비어 있는 가장 작은 항공사 번호 조회
-            pstmt = con.prepareStatement(findSql);
-            rset = pstmt.executeQuery();
-
-            if (rset.next()) {
-                airlineCode = rset.getInt("airline_code");
-            }
-
-            close(rset);
-            close(pstmt);
-
-            // 새로운 항공사 등록
             pstmt = con.prepareStatement(sql);
 
-            pstmt.setInt(1, airlineCode);
-            pstmt.setString(2, airline.getAirlineName());
-            pstmt.setString(3, airline.getCustomerServiceNumber());
+            pstmt.setString(1, airline.getAirlineName());
+            pstmt.setString(2, airline.getCustomerServiceNumber());
 
             result = pstmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            close(rset);
             close(pstmt);
         }
 
         return result;
     }
-
 
     // FR-08 항공사 변경
     public int updateAirline(Connection con, AirlineDTO airline) {
