@@ -1,6 +1,6 @@
 package com.ohgiraffers.airquery.airline;
 
-import com.ohgiraffers.airquery.airline.view.AirlineMenu;
+import com.ohgiraffers.airquery.airline.menu.AirlineMenu;
 
 public class Application {
 

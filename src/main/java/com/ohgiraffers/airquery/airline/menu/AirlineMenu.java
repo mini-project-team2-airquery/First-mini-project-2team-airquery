@@ -1,7 +1,8 @@
-package com.ohgiraffers.airquery.airline.view;
+package com.ohgiraffers.airquery.airline.menu;
 
 import com.ohgiraffers.airquery.airline.controller.AirlineController;
 import com.ohgiraffers.airquery.airline.dto.AirlineDTO;
+import com.ohgiraffers.airquery.airline.view.AirlineView;
 
 import java.util.List;
 import java.util.Scanner;
