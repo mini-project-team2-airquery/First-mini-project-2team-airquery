@@ -1,5 +1,6 @@
 package com.ohgiraffers.airquery.reservation.model.service;
 
+import com.ohgiraffers.airquery.baggage.model.dto.BaggageDTO;
 import com.ohgiraffers.airquery.payment.model.dao.PaymentDAO;
 import com.ohgiraffers.airquery.payment.model.dto.PaymentDTO;
 import com.ohgiraffers.airquery.reservation.model.dao.ReservationDAO;
@@ -9,7 +10,9 @@ import com.ohgiraffers.airquery.seat.model.dao.SeatDAO;
 import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
 import static com.ohgiraffers.airquery.common.JDBCTemplate.commit;
@@ -60,11 +63,17 @@ public class ReservationService {
             return null;
         }
 
+        // 결제 정보
         PaymentDTO payment = paymentDAO.findByReservation(con, reservationCode);
+
+        // 수하물, 좌석 정보 같이 조회
+        Map<String, Object> otherInfo =
+                reservationDAO.getSeatAndBaggageInfoOfReservation(con, reservationCode);
 
         close(con);
 
-        detail = ReservationDetailDTO.of(reservation, payment, null, null);
+        detail = ReservationDetailDTO.of(reservation, payment,
+                (SeatDTO) otherInfo.get("seatDTO"), (List<BaggageDTO>) otherInfo.get("baggageList"));
 
         return detail;
     }
@@ -93,7 +102,7 @@ public class ReservationService {
 
         Connection con = getConnection();
 
-        ReservationDTO dto = reservationDAO.findById(con, reservationCode, memberCode);
+        // ReservationDTO dto = reservationDAO.findById(con, reservationCode, memberCode);
 
         // 예매 정보, 결제 정보, 수하물 정보, 좌석 정보 모두 취소처리되어야 함
         int result = reservationDAO.deleteReservation(con, reservationCode);

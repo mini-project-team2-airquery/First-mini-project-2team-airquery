@@ -5,6 +5,7 @@ import com.ohgiraffers.airquery.payment.model.dto.PaymentDTO;
 import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ReservationDetailDTO {
 
@@ -36,12 +37,22 @@ public class ReservationDetailDTO {
     private int baggageCode;        // 수하물 번호
     private double baggageWeight;   // 수하물 무게
 
+    private List<BaggageDTO> baggageList;
+
     public boolean isDeleted() {
         return isDeleted;
     }
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public List<BaggageDTO> getBaggageList() {
+        return baggageList;
+    }
+
+    public void setBaggageList(List<BaggageDTO> baggageList) {
+        this.baggageList = baggageList;
     }
 
     public int getReservationCode() {
@@ -181,7 +192,7 @@ public class ReservationDetailDTO {
     }
 
     // 예매 상세 정보 DTO 조립
-    public static <BaggageDTO> ReservationDetailDTO of(ReservationDTO r, PaymentDTO p, SeatDTO s, BaggageDTO b) {
+    public static ReservationDetailDTO of(ReservationDTO r, PaymentDTO p, SeatDTO s, List<BaggageDTO> b) {
 
         ReservationDetailDTO dto = new ReservationDetailDTO();
 
@@ -212,8 +223,7 @@ public class ReservationDetailDTO {
 
          if(b != null) {
 
-             // dto.setBaggageCode(b.getBaggageCode());
-             // dto.setBaggageWeight(b.getBaggageWeight()); -> 타입 변경 필요
+             dto.setBaggageList(b);
          }
 
         return dto;

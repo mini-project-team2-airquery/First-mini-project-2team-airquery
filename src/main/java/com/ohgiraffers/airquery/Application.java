@@ -200,6 +200,7 @@ public class Application {
             reservationMenu.displayMenu(sc);
         } else if("Member".equals(loginMember.getMemberAuth())){
 
+            reservationMenu.displayMenu(sc);
         } else {
             System.out.println("알수없는 회원입니다.");
         }
