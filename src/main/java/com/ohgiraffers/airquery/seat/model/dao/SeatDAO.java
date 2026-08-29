@@ -474,4 +474,203 @@ public class SeatDAO {
 
         return result;
     }
+
+    /*
+     * 기존 좌석과 새 좌석만으로 좌석을 변경하는 메서드
+     * 기존 좌석은 예약 가능(false), 새 좌석은 예약됨(true)으로 바꾼다.
+     */
+    public int changeSeatOnly(Connection con, int oldSeatCode, int newSeatCode) {
+
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = "UPDATE tbl_seat " +
+                "SET is_reserved = CASE " +
+                "WHEN seat_code = ? THEN false " +
+                "WHEN seat_code = ? THEN true " +
+                "END " +
+                "WHERE seat_code IN (?, ?)";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, oldSeatCode);
+            pstmt.setInt(2, newSeatCode);
+            pstmt.setInt(3, oldSeatCode);
+            pstmt.setInt(4, newSeatCode);
+
+            result = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /*
+     * 현재 선택되어 있는 기존 좌석의 등급을 조회하는 메서드
+     * is_reserved가 true인 좌석만 기존 좌석으로 인정한다.
+     */
+    public String selectReservedSeatClassBySeatCode(Connection con, int seatCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        String flightClass = null;
+
+        String query = "SELECT flight_class " +
+                "FROM tbl_seat " +
+                "WHERE seat_code = ? " +
+                "AND is_reserved = true";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, seatCode);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                flightClass = rset.getString("flight_class");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return flightClass;
+    }
+
+    /*
+     * 새로 선택하려는 좌석의 등급을 조회하는 메서드
+     * is_reserved가 false인 좌석만 새 좌석으로 선택할 수 있다.
+     */
+    public String selectAvailableSeatClassBySeatCode(Connection con, int seatCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        String flightClass = null;
+
+        String query = "SELECT flight_class " +
+                "FROM tbl_seat " +
+                "WHERE seat_code = ? " +
+                "AND is_reserved = false";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, seatCode);
+
+            rset = pstmt.executeQuery();
+
+            if (rset.next()) {
+                flightClass = rset.getString("flight_class");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return flightClass;
+    }
+
+    /*
+     * 회원이 현재 선택한 좌석의 등급을 조회하는 메서드
+     * 좌석 변경할 때 기존 좌석 등급을 알아야 새 좌석 등급과 비교할 수 있다.
+     */
+    public String selectSelectedSeatClass(Connection con, int memberCode, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        String flightClass = null;
+
+        /*
+         * tbl_reservation에는 선택한 seat_code가 들어있고,
+         * tbl_seat에는 seat_code에 해당하는 좌석등급(flight_class)이 들어있다.
+         * 그래서 두 테이블을 JOIN해서 현재 선택한 좌석의 등급을 가져온다.
+         */
+        String query = "SELECT s.flight_class " +
+                "FROM tbl_reservation r " +
+                "JOIN tbl_seat s ON r.seat_code = s.seat_code " +
+                "WHERE r.member_code = ? " +
+                "AND r.flight_code = ? " +
+                "AND r.seat_code IS NOT NULL " +
+                "ORDER BY r.reservation_code " +
+                "LIMIT 1";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, memberCode);
+            pstmt.setInt(2, flightCode);
+
+            rset = pstmt.executeQuery();
+
+            // 조회 결과가 있으면 현재 선택한 좌석의 등급을 꺼낸다.
+            if (rset.next()) {
+                flightClass = rset.getString("flight_class");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return flightClass;
+    }
+
+    /*
+     * 새로 선택하려는 좌석의 등급을 조회하는 메서드
+     * 새 좌석이 같은 등급인지, 상위 등급인지 확인하기 위해 사용한다.
+     */
+    public String selectSeatClass(Connection con, int seatCode, int flightCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        String flightClass = null;
+
+        /*
+         * 새 좌석은 아래 조건을 모두 만족해야 한다.
+         * 1. 사용자가 입력한 seat_code와 일치해야 한다.
+         * 2. 현재 예매한 flight_code와 같은 항공편이어야 한다.
+         * 3. 아직 예약되지 않은 좌석이어야 한다.
+         */
+        String query = "SELECT flight_class " +
+                "FROM tbl_seat " +
+                "WHERE seat_code = ? " +
+                "AND flight_code = ? " +
+                "AND is_reserved = false";
+
+        try {
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setInt(1, seatCode);
+            pstmt.setInt(2, flightCode);
+
+            rset = pstmt.executeQuery();
+
+            // 조건에 맞는 좌석이 있으면 그 좌석의 등급을 가져온다.
+            if (rset.next()) {
+                flightClass = rset.getString("flight_class");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return flightClass;
+    }
 }
