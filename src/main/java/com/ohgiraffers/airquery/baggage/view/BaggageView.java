@@ -21,7 +21,7 @@ public class BaggageView {
         System.out.println("|  2. 수하물 조회                          |");
         System.out.println("|  3. 수하물 무게 변경                      |");
         System.out.println("|  9. 메인 메뉴로 돌아가기                   |");
-        System.out.println("+------------------------------------------+");
+        System.out.println("+==========================================+");
         System.out.print("  메뉴 선택 > ");
     }
 
@@ -49,7 +49,7 @@ public class BaggageView {
             System.out.println("  " + title);
             System.out.println("+======================================================+");
             System.out.println("  [안내] 수하물이 없습니다.");
-            System.out.println("+------------------------------------------------------+");
+            System.out.println("+======================================================+");
             return;
         }
 
@@ -69,7 +69,7 @@ public class BaggageView {
                 System.out.println("   지참여부   : " + (baggage.isBaggageCarrying() ? "YES" : "NO"));
             }
             System.out.println("   수하물무게 : " + baggage.getBaggageWeight() + " kg");
-            System.out.println("+------------------------------------------------------+");
+            System.out.println("+======================================================+");
         }
     }
 

@@ -13,7 +13,10 @@ import java.util.Scanner;
  */
 public class BaggageMenu {
 
+    // 예매번호와 수하물번호가 숫자로만 입력되었는지 확인하는 규칙이다.
     private static final String NUMBER_PATTERN = "[0-9]+";
+
+    // 수하물 무게가 정수 또는 소수점 숫자인지 확인하는 규칙이다.
     private static final String WEIGHT_PATTERN = "[0-9]+(\\.[0-9]+)?";
 
     // 실제 기능 요청은 Controller에게 넘긴다.

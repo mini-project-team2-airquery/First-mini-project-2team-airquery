@@ -16,10 +16,7 @@ public class BaggageService {
 
     private final BaggageDAO baggageDAO = new BaggageDAO();
 
-    /*
-     * 수하물 전체 조회 서비스 메서드
-     * 조회 메뉴에 들어갔을 때 전체 수하물을 먼저 보여준다.
-     */
+    // 수하물 전체 조회 서비스 메서드, 조회 메뉴에 들어갔을 때 전체 수하물을 먼저 보여준다.
     public List<BaggageDTO> selectAllBaggages() {
 
         Connection con = getConnection();
@@ -39,10 +36,7 @@ public class BaggageService {
         return baggageList;
     }
 
-    /*
-     * 예매 존재 여부 확인 서비스 메서드
-     * 수하물 조회 전에 예매내역이 있는지 먼저 확인할 때 사용한다.
-     */
+    // 예매 존재 여부 확인 서비스 메서드, 수하물 조회 전에 예매내역이 있는지 먼저 확인할 때 사용한다.
     public boolean existsReservation(int reservationCode) {
 
 
@@ -70,10 +64,7 @@ public class BaggageService {
         return isBaggageCarrying;
     }
 
-    /*
-     * 예매번호로 수하물 조회 서비스 메서드
-     * 조회는 데이터를 바꾸지 않기 때문에 commit, rollback이 필요 없다.
-     */
+    // 예매번호로 수하물 조회 서비스 메서드, 조회는 데이터를 바꾸지 않기 때문에 commit, rollback이 필요 없다.
     public List<BaggageDTO> selectBaggagesByReservationCode(int reservationCode) {
 
         Connection con = getConnection();
@@ -108,10 +99,7 @@ public class BaggageService {
         return result > 0;
     }
 
-    /*
-     * 수하물 무게 변경 서비스 메서드
-     * 수하물번호로 기존 수하물을 찾고, 무게만 수정한다.
-     */
+    // 수하물 무게 변경 서비스 메서드, 수하물번호로 기존 수하물을 찾고, 무게만 수정한다.
     public boolean updateBaggageWeight(int reservationCode, int baggageCode, double baggageWeight) {
 
         Connection con = getConnection();

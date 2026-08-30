@@ -51,26 +51,33 @@ public class BaggageDTO {
         this.baggageWeight = baggageWeight;
     }
 
+    // 이 수하물을 등록한 회원의 회원번호를 꺼낼 때 사용한다.
     public int getMemberCode() {
         return memberCode;
     }
 
+    // DB에서 조회한 회원번호를 BaggageDTO의 memberCode에 저장할 때 사용한다.
     public void setMemberCode(int memberCode) {
         this.memberCode = memberCode;
     }
 
+    // 이 수하물을 등록한 회원의 이름을 꺼낼 때 사용한다.
     public String getMemberName() {
         return memberName;
     }
 
+    // DB에서 조회한 회원 이름을 BaggageDTO의 memberName에 저장할 때 사용한다.
     public void setMemberName(String memberName) {
         this.memberName = memberName;
     }
 
+    // 예매할 때 수하물 지참 여부를 YES로 선택했는지 확인할 때 사용한다.
+    // true이면 YES, false이면 NO를 뜻한다.
     public boolean isBaggageCarrying() {
         return baggageCarrying;
     }
 
+    // DB에서 조회한 수하물 지참 여부를 BaggageDTO에 저장할 때 사용한다.
     public void setBaggageCarrying(boolean baggageCarrying) {
         this.baggageCarrying = baggageCarrying;
     }
