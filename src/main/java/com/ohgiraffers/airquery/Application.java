@@ -247,11 +247,11 @@ public class Application {
 
         SeatMenu seatMenu = new SeatMenu();
 
-        if("Admin".equals(loginMember.getMemberAuth())){
+        if("Admin".equals(loginMember.getMemberAuth()) ||
+                "Member".equals(loginMember.getMemberAuth())) {
 
-            seatMenu.displayMenu(sc);
-        } else if("Member".equals(loginMember.getMemberAuth())){
-
+            // 로그인할 때 생성된 회원번호를 좌석 메뉴에 전달한다.
+            seatMenu.displayMenu(sc, loginMember.getMemberCode());
         } else {
             System.out.println("알수없는 회원입니다.");
         }

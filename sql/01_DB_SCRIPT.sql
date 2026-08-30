@@ -264,12 +264,7 @@ VALUES
     (7, 7, '12D', 'ECONOMY',       0, TRUE),
     (8, 8, '15A', 'ECONOMY',       0, TRUE),
     (9, 9, '3A',  'BUSINESS', 500000, TRUE),
-    (10, 10, '18F', 'ECONOMY',     0, FALSE),
-    (11, 1, '1B',  'FIRST',    2000000, FALSE),
-    (12, 2, '2B',  'BUSINESS', 500000, FALSE),
-    (13, 3, '10B', 'ECONOMY',       0, FALSE),
-    (14, 4, '10C', 'ECONOMY',       0, FALSE),
-    (15, 5, '5B',  'BUSINESS', 500000, FALSE);
+    (10, 10, '18F', 'ECONOMY',     0, TRUE);
 
 
 -- =====================================================
