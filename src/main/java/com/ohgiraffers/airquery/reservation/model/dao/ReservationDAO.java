@@ -1,6 +1,8 @@
 package com.ohgiraffers.airquery.reservation.model.dao;
 
+import com.ohgiraffers.airquery.baggage.model.dto.BaggageDTO;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
+import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,9 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
 
@@ -271,6 +271,82 @@ public class ReservationDAO {
     }
 
     /* 특정 예약 건에 대한 좌석 및 수하물 정보 조회 */
+    public Map<String, Object> getSeatAndBaggageInfoOfReservation(Connection con, int reservationCode) {
+
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+
+        Map<String, Object> info = new HashMap<String, Object>();
+
+        String query = "" +
+                "SELECT b.baggage_code, b.baggage_weight, s.seat_id, s.flight_class, s.additional_amount " +
+                "FROM tbl_reservation r " +
+                "JOIN tbl_seat s on r.seat_code = s.seat_code " +
+                "JOIN tbl_baggage b on r.reservation_code = b.reservation_code " +
+                "WHERE r.reservation_code = ?" +
+                "";
+
+        String seatQuery = "" +
+                "SELECT s.seat_code, s.flight_code, s.seat_id, s.flight_class, s.additional_amount, s.is_reserved " +
+                "FROM tbl_reservation r " +
+                "JOIN tbl_seat s ON r.seat_code = s.seat_code " +
+                "WHERE r.reservation_code = ?";
+
+        String baggageQuery = "" +
+                "SELECT baggage_code, baggage_weight " +
+                "FROM tbl_baggage " +
+                "WHERE reservation_code = ?" +
+                "";
+        try {
+
+            pstmt = con.prepareStatement(seatQuery);
+            pstmt.setInt(1, reservationCode);
+            rs = pstmt.executeQuery();
+
+            List<BaggageDTO> baggageList = new ArrayList<>();
+            SeatDTO seatDTO = null;
+
+            if(rs.next()) {
+
+                seatDTO = new SeatDTO();
+
+                // 좌석 정보
+                seatDTO.setSeatCode(rs.getInt("seat_code"));
+                seatDTO.setSeatId(rs.getString("seat_id"));
+                seatDTO.setFlightClass(rs.getString("flight_class"));
+                seatDTO.setAdditionalAmount(rs.getInt("additional_amount"));
+
+                info.put("seatDTO", seatDTO);
+            }
+
+            close(rs);
+
+            pstmt = con.prepareStatement(baggageQuery);
+            pstmt.setInt(1, reservationCode);
+            rs = pstmt.executeQuery();
+
+            while(rs.next()) {
+
+                BaggageDTO baggageDTO = new BaggageDTO();
+
+                // 수하물 정보
+                baggageDTO.setBaggageCode(rs.getInt("baggage_code"));
+                baggageDTO.setBaggageWeight(rs.getDouble("baggage_weight"));
+
+                baggageList.add(baggageDTO);
+            }
+
+            info.put("baggageList", baggageList);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rs);
+            close(pstmt);
+        }
+
+        return info;
+    }
 
     /* 예약 변경 (취소 후 재결제) */
 }
