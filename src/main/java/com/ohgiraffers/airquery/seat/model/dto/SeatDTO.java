@@ -8,22 +8,12 @@ public class SeatDTO {
     private String flightClass; // 좌석등급 -> 이코노미, 비지니스, 퍼스트
     private int additionalAmount; // 추가금액 / 기본값은 0으로 나타냄
     private boolean reserved; // 좌석 선점여부, 예약되었는지 확인하는 값
+    private int reservedMemberCode; // 프로그램 실행 중 이 좌석을 예약한 회원번호
+    private String reservedMemberName; // 프로그램 실행 중 이 좌석을 예약한 회원 이름
 
 
     public SeatDTO() {
 
-    }
-
-    // 모든값을 한번에 넣어서 SeatDTO 객체를 만들때 사용
-    public SeatDTO(int seatCode, int flightCode, String seatId, String flightClass,
-                   int additionalAmount, boolean reserved) {
-
-        this.seatCode = seatCode;
-        this.flightCode = flightCode;
-        this.seatId = seatId;
-        this.flightClass = flightClass;
-        this.additionalAmount = additionalAmount;
-        this.reserved = reserved;
     }
 
     // seatCode 값을 꺼내는 메서드
@@ -89,6 +79,22 @@ public class SeatDTO {
         this.reserved = reserved;
     }
 
+    public int getReservedMemberCode() {
+        return reservedMemberCode;
+    }
+
+    public void setReservedMemberCode(int reservedMemberCode) {
+        this.reservedMemberCode = reservedMemberCode;
+    }
+
+    public String getReservedMemberName() {
+        return reservedMemberName;
+    }
+
+    public void setReservedMemberName(String reservedMemberName) {
+        this.reservedMemberName = reservedMemberName;
+    }
+
     @Override
     public String toString() {
         return "SeatDTO{" +
@@ -98,6 +104,8 @@ public class SeatDTO {
                 ", flightClass='" + flightClass + '\'' +
                 ", additionalAmount=" + additionalAmount +
                 ", reserved=" + reserved +
+                ", reservedMemberCode=" + reservedMemberCode +
+                ", reservedMemberName='" + reservedMemberName + '\'' +
                 '}';
     }
 }
