@@ -11,11 +11,7 @@ import static com.ohgiraffers.airquery.common.JDBCTemplate.commit;
 import static com.ohgiraffers.airquery.common.JDBCTemplate.getConnection;
 import static com.ohgiraffers.airquery.common.JDBCTemplate.rollback;
 
-/*
- * Service
- * DB 연결을 만들고, 성공하면 commit, 실패하면 rollback을 처리하는 역할을 한다.
- * 실제 SQL 실행은 DAO에게 맡긴다.
- */
+
 public class BaggageService {
 
     private final BaggageDAO baggageDAO = new BaggageDAO();

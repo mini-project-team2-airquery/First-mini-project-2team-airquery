@@ -107,11 +107,6 @@ public class BaggageView {
         System.out.println("[안내] 예매 시 수하물 지참 여부가 NO이므로 등록할 수 없습니다.");
     }
 
-    // 예매할 때 수하물 신청을 하지 않은 경우 조회할 수 없다는 문구 출력
-    public void displayNoBaggageCarryingSelectMessage() {
-        System.out.println("[안내] 예매 시 수하물 지참 여부가 NO이므로 조회할 수 없습니다.");
-    }
-
     // 예매할 때 수하물 신청을 하지 않은 경우 변경할 수 없다는 문구 출력
     public void displayNoBaggageCarryingUpdateMessage() {
         System.out.println("[안내] 예매 시 수하물 지참 여부가 NO이므로 수하물을 등록할 수 없습니다.");
