@@ -3,6 +3,7 @@ package com.ohgiraffers.airquery.reservation.view;
 import com.ohgiraffers.airquery.baggage.model.dto.BaggageDTO;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDetailDTO;
+import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +15,9 @@ public class ResultView {
 
     private static final int[] LIST_WIDTHS = {8, 10, 8, 10, 16};
     private static final String[] LIST_HEADERS = {"예매번호", "항공편번호", "좌석번호", "수하물지참", "예매일시"};
+
+    private static final int[] SEAT_LIST_WIDTHS = {8, 10, 10, 10};
+    private static final String[] SEAT_LIST_HEADERS = {"좌석번호", "좌석식별번호", "좌석등급", "추가금액"};
 
     private static final int LABEL_WIDTH = 12;
     private static final int DETAIL_WIDTH = 43;
@@ -36,6 +40,25 @@ public class ResultView {
         }
 
         printTableBorder(LIST_WIDTHS);
+    }
+
+    public void printAvailableSeatList(List<SeatDTO> seatList) {
+
+        System.out.println();
+        printTableBorder(SEAT_LIST_WIDTHS);
+        printTableRow(SEAT_LIST_WIDTHS, SEAT_LIST_HEADERS);
+        printTableBorder(SEAT_LIST_WIDTHS);
+
+        for (SeatDTO seat : seatList) {
+            printTableRow(SEAT_LIST_WIDTHS, new String[]{
+                    String.valueOf(seat.getSeatCode()),
+                    seat.getSeatId(),
+                    seat.getFlightClass(),
+                    formatMoney(seat.getAdditionalAmount())
+            });
+        }
+
+        printTableBorder(SEAT_LIST_WIDTHS);
     }
 
     public void printReservationDetail(ReservationDetailDTO detail) {
