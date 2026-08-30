@@ -4,6 +4,7 @@ import com.ohgiraffers.airquery.reservation.model.dto.ReservationDTO;
 import com.ohgiraffers.airquery.reservation.model.dto.ReservationDetailDTO;
 import com.ohgiraffers.airquery.reservation.model.service.ReservationService;
 import com.ohgiraffers.airquery.reservation.view.ResultView;
+import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -40,10 +41,10 @@ public class ReservationController {
         reservationDTO.setFlightCode((int) requestMap.get("flightCode"));
         reservationDTO.setBaggageCarrying((boolean)  requestMap.get("baggageCarrying"));
 
-        int result = reservationService.registerReservation(reservationDTO);
+        ReservationDTO savedReservation = reservationService.registerReservation(reservationDTO);
 
-        if(result == 1) {
-            resultView.printReservationDetail(ReservationDetailDTO.of(reservationDTO, null, null, null));
+        if(savedReservation != null) {
+            resultView.printReservationDetail(ReservationDetailDTO.of(savedReservation, null, null, null));
         } else {
             System.out.println("예매 등록 실패");
         }
@@ -60,4 +61,36 @@ public class ReservationController {
             System.out.println("예매 취소 실패");
         }
     }
+    
+    /* 예매 변경 */
+    
+    // 좌석 등급 변경 시 보여줄, 현재 등급 제외 예약 가능 좌석 목록 조회
+    public List<SeatDTO> getAvailableSeatsForFlight(int flightCode, String currentFightClass) {
+
+        return reservationService.selectAvailableOtherClassSeats(flightCode, currentFightClass);
+    }
+    
+    public void changeSeatClass(int oldSeatCode, int newSeatCode, int flightCode, int reservationCode) {
+        
+        int result =  reservationService.changeSeatClass(oldSeatCode, newSeatCode, flightCode, reservationCode);
+        
+        if(result == 1) {
+            System.out.println("좌석 등급 변경 성공");
+        } else {
+            System.out.println("좌석 등급 변경 실패");
+        }
+    }
+    
+    // 수하물 지참여부 변경
+    public void changeBaggageCarrying(int reservationCode, boolean baggageCarrying) {
+        
+        int result = reservationService.changeBaggageCarrying(reservationCode, baggageCarrying);
+        
+        if(result == 1) {
+            System.out.println("수하물 지참 여부 변경 성공");
+        } else {
+            System.out.println("수하물 지참 여부 변경 실패");
+        }
+    }
+    
 }
