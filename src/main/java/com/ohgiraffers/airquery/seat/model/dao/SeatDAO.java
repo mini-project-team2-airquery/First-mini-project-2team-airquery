@@ -18,8 +18,8 @@ import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
 /*
  * 좌석과 예매 테이블에 SQL을 실행하는 클래스이다.
  * SELECT 결과는 SeatDTO/List/Map으로 바꾸고, UPDATE 결과는 변경된 행의 수로 반환한다.
- * Connection의 생성, commit, rollback, close는 SeatService가 담당한다.
- * PreparedStatement의 ?에는 setInt 등으로 값을 넣어 SQL Injection을 방지한다.
+ * Connection의 생성, commit, rollback, close는 SeatService가 담당한다
+ * PreparedStatement의 ?에는 setInt 등으로 값을 넣어 SQL Injection을 방지한다
  */
 public class SeatDAO {
 

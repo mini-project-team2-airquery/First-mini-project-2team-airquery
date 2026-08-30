@@ -91,7 +91,7 @@ public class SeatView {
         }
     }
 
-    // DB의 영어 좌석등급을 사용자에게 보여줄 한글로 바꾼다.
+    // DB의 영어 좌석등급을 사용자에게 보여줄 한글로 바꾼다
     private String changeFlightClassToKorean(String flightClass) {
         if (flightClass == null) {
             return "";

@@ -19,7 +19,7 @@ public class SeatMenu {
     private final SeatController seatController = new SeatController();
     private final SeatView seatView = new SeatView();
 
-    // memberCode를 이미 알고 있을 때 회원번호 입력 없이 실행하는 진입점이다.
+    // memberCode를 이미 알고 있을 때 회원번호 입력 없이 실행하는 진입점이다
     public void displayMenu(Scanner sc, int memberCode) {
         while (true) {
 

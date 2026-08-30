@@ -204,7 +204,7 @@ public class SeatService {
         return flightClass;
     }
 
-    // 새 좌석이 같은 항공편의 빈 좌석일 때 해당 등급을 반환한다.
+    // 새 좌석이 같은 항공편의 빈 좌석일 때 해당 등급을 반환한다
     public String getAvailableSeatClass(int seatCode, int flightCode) {
         Connection con = getConnection();
         String flightClass = seatDAO.selectAvailableSeatClass(con, seatCode, flightCode);
@@ -212,7 +212,7 @@ public class SeatService {
         return flightClass;
     }
 
-    // 조회된 DTO에 실행 중 저장한 예약 회원번호를 붙인다.
+    // 조회된 DTO에 실행 중 저장한 예약 회원번호를 붙인다
     private void addReservedMemberCodes(List<SeatDTO> seatList) {
         for (SeatDTO seat : seatList) {
             Integer memberCode = reservedSeatMembers.get(seat.getSeatCode());

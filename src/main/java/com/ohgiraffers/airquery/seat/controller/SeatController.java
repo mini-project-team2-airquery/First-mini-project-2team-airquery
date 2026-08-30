@@ -40,12 +40,12 @@ public class SeatController {
         return seatService.selectAvailableSeatsByFlightCode(flightCode);
     }
 
-    // 로그인 회원이 좌석을 아직 선택하지 않은 예매 목록을 요청한다.
+    // 로그인 회원이 좌석을 아직 선택하지 않은 예매 목록을 요청한다
     public Map<Integer, Integer> getReservationsWithoutSeat(int memberCode) {
         return seatService.selectReservationsWithoutSeat(memberCode);
     }
 
-    // 예매와 연결하지 않고 좌석번호만으로 빈 좌석을 예약한다.
+    // 예매와 연결하지 않고 좌석번호만으로 빈 좌석을 예약한다
     public boolean reserveSeat(int memberCode, int seatCode) {
         return seatService.reserveSeat(memberCode, seatCode);
     }
