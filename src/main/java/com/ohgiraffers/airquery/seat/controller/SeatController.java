@@ -4,12 +4,18 @@ import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 import com.ohgiraffers.airquery.seat.model.service.SeatService;
 
 import java.util.List;
+import java.util.Map;
 
 public class SeatController {
 
     // 좌석 관련 비지니스 로직 객체 생성 및 필드로 이동
     // final 사용하여 서비스 호출 및 결과를 반환
     private final SeatService seatService = new SeatService();
+
+    // 좌석 메뉴에 접속한 로그인 회원이 관리자인지 요청한다.
+    public boolean isAdmin(int memberCode) {
+        return seatService.isAdmin(memberCode);
+    }
 
     // DB에 저장된 모든 좌석을 요청한다.
     public List<SeatDTO> getAllSeats() {
@@ -32,6 +38,11 @@ public class SeatController {
     public List<SeatDTO> getAvailableSeatsByFlightCode(int flightCode) {
 
         return seatService.selectAvailableSeatsByFlightCode(flightCode);
+    }
+
+    // 로그인 회원이 좌석을 아직 선택하지 않은 예매 목록을 요청한다.
+    public Map<Integer, Integer> getReservationsWithoutSeat(int memberCode) {
+        return seatService.selectReservationsWithoutSeat(memberCode);
     }
 
     // 예매와 연결하지 않고 좌석번호만으로 빈 좌석을 예약한다.

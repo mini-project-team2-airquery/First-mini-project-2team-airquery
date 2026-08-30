@@ -28,6 +28,14 @@ public class SeatService {
     // key=좌석번호, value=로그인 회원 이름
     private static final Map<Integer, String> reservedSeatMemberNames = new HashMap<>();
 
+    // 로그인 회원의 관리자 권한을 조회한다.
+    public boolean isAdmin(int memberCode) {
+        Connection con = getConnection();
+        boolean admin = seatDAO.isAdmin(con, memberCode);
+        close(con);
+        return admin;
+    }
+
     // 전체 좌석 조회가 끝나면 Connection을 닫고 목록을 반환한다.
     public List<SeatDTO> selectAllSeats() {
 
@@ -83,15 +91,33 @@ public class SeatService {
         return seatList;
     }
 
+    // 로그인 회원의 좌석 미선택 예매번호와 항공편번호를 반환한다.
+    public Map<Integer, Integer> selectReservationsWithoutSeat(int memberCode) {
+        Connection con = getConnection();
+        Map<Integer, Integer> reservationMap =
+                seatDAO.selectReservationsWithoutSeat(con, memberCode);
+        close(con);
+        return reservationMap;
+    }
+
     // 좌석 예약 상태와 로그인 회원의 예매 좌석번호를 하나의 트랜잭션으로 저장한다.
     public boolean reserveSeat(int memberCode, int seatCode) {
         Connection con = getConnection();
-        int seatResult = seatDAO.reserveSeat(con, seatCode);
+
+        // 좌석번호가 100을 넘어도 그대로 조회하며, 해당 좌석과 같은 항공편의 로그인 회원 예매를 찾는다.
+        int reservationCode = seatDAO.selectReservationCodeWithoutSeat(con, memberCode, seatCode);
+        int seatResult = 0;
         int reservationResult = 0;
 
+        if (reservationCode > 0) {
+            seatResult = seatDAO.reserveSeat(con, seatCode);
+        }
+
         if (seatResult > 0) {
-            // 선택 좌석과 같은 항공편의 로그인 회원 예매에 seat_code를 저장한다.
-            reservationResult = seatDAO.updateMemberReservationSeat(con, memberCode, seatCode);
+            // 앞에서 찾은 정확한 예매에 선택한 좌석번호를 저장한다.
+            reservationResult = seatDAO.updateMemberReservationSeat(
+                    con, reservationCode, memberCode, seatCode
+            );
         }
 
         // 좌석 예약과 예매 연결이 모두 성공해야 DB에 확정한다.

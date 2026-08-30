@@ -3,6 +3,7 @@ package com.ohgiraffers.airquery.seat.view;
 import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /*
  * 좌석 기능에서 사용자에게 보여줄 문구와 목록 출력을 담당한다.
@@ -80,7 +81,7 @@ public class SeatView {
         for (SeatDTO seat : seatList) {
             System.out.println("  [좌석 " + seat.getSeatCode() + "] " + seat.getSeatId());
             if (showFlightCode) {
-                System.out.println("   항공편   : " + seat.getFlightCode());
+                System.out.println("   항공편번호: " + seat.getFlightCode());
             }
             System.out.println("   좌석등급 : " + changeFlightClassToKorean(seat.getFlightClass()));
             System.out.println("   추가금액 : " + String.format("%,d", seat.getAdditionalAmount()) + "원");
@@ -141,7 +142,45 @@ public class SeatView {
     }
 
     public void displayInputSeatCodeMessage() {
-        System.out.print("  예약할 좌석번호 > ");
+        System.out.print("  예약할 좌석번호(seat_code) > ");
+    }
+
+    public void displayInputReservationMemberCodeMessage() {
+        System.out.print("  예매 메뉴에서 입력했던 회원번호 > ");
+    }
+
+    public void displayAdminSeatAccessMessage() {
+        System.out.println("[관리자] 예매 메뉴에서 사용한 회원번호 기준으로 좌석을 선택합니다.");
+        System.out.println("[안내] 이미 등록된 예매도 좌석을 아직 선택하지 않았다면 좌석 선택이 가능합니다.");
+    }
+
+    public void displayMemberCodeNumberOnlyMessage() {
+        System.out.println("[안내] 회원번호는 숫자로 입력해주세요.");
+    }
+
+    public void displayReservationsWithoutSeat(Map<Integer, Integer> reservationMap) {
+        System.out.println();
+        System.out.println("+==========================================+");
+        System.out.println("|    좌석을 선택할 수 있는 기존 예매 목록   |");
+        System.out.println("+==========================================+");
+        for (Map.Entry<Integer, Integer> entry : reservationMap.entrySet()) {
+            System.out.println("  예매번호: " + entry.getKey()
+                    + " | 항공편번호: " + entry.getValue());
+        }
+        System.out.println("+------------------------------------------+");
+    }
+
+    public void displayNoReservationWithoutSeatMessage() {
+        System.out.println("[안내] 해당 회원에게 좌석을 선택할 수 있는 예매가 없습니다.");
+        System.out.println("[안내] 예매 메뉴에서 입력한 회원번호와 같은 번호인지 확인해주세요.");
+    }
+
+    public void displaySelectReservationFlightMessage() {
+        System.out.print("  위 예매 목록 중 좌석을 선택할 항공편번호 > ");
+    }
+
+    public void displayInvalidReservationFlightMessage() {
+        System.out.println("[안내] 위 예매 목록에 있는 항공편번호만 선택할 수 있습니다.");
     }
 
     public void displaySeatCodeNumberOnlyMessage() {
@@ -150,6 +189,7 @@ public class SeatView {
 
     public void displayUnavailableSeatCodeMessage() {
         System.out.println("[안내] 존재하지 않거나 이미 예약된 좌석번호입니다.");
+        System.out.println("[안내] 좌석 ID(예: 5D)가 아니라 [좌석 120]처럼 보이는 숫자를 입력해주세요.");
     }
 
     public void displayRetrySeatCodeMessage() {
@@ -159,6 +199,7 @@ public class SeatView {
     public void displayReserveSeatResult(boolean isSuccess) {
         if (isSuccess) {
             System.out.println("[성공] 좌석 예약이 완료되었습니다.");
+            System.out.println("[성공] 선택한 좌석번호가 예매 정보에도 저장되었습니다.");
         } else {
             System.out.println("[실패] 해당 항공편의 예매가 없거나 이미 예약된 좌석입니다.");
         }

@@ -4,6 +4,7 @@ import com.ohgiraffers.airquery.seat.controller.SeatController;
 import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 
@@ -116,7 +117,54 @@ public class SeatMenu {
     /* 빈 좌석을 예약하고 로그인 회원의 해당 항공편 예매에 좌석번호를 연결한다. */
     private void reserveSeat(Scanner sc, int memberCode) {
 
-        List<SeatDTO> seatList = seatController.getAvailableSeats();
+        // 관리자는 모든 회원 예매를 처리할 수 있어 예매 회원번호를 선택한다.
+        // 일반 회원은 로그인 회원번호만 사용하여 다른 회원 예매에 접근하지 못하게 한다.
+        if (seatController.isAdmin(memberCode)) {
+            seatView.displayAdminSeatAccessMessage();
+            seatView.displayInputReservationMemberCodeMessage();
+            String memberCodeInput = sc.nextLine();
+
+            if (!memberCodeInput.matches("[0-9]+")) {
+                seatView.displayMemberCodeNumberOnlyMessage();
+                backToSeatMenu(sc);
+                return;
+            }
+
+            memberCode = Integer.parseInt(memberCodeInput);
+        }
+
+        // 예매할 때 입력한 회원번호의 좌석 미선택 예매를 먼저 보여준다.
+        Map<Integer, Integer> reservationMap =
+                seatController.getReservationsWithoutSeat(memberCode);
+
+        if (reservationMap.isEmpty()) {
+            seatView.displayNoReservationWithoutSeatMessage();
+            backToSeatMenu(sc);
+            return;
+        }
+
+        seatView.displayReservationsWithoutSeat(reservationMap);
+        seatView.displaySelectReservationFlightMessage();
+        String flightCodeInput = sc.nextLine();
+
+        if (!flightCodeInput.matches("[0-9]+")) {
+            seatView.displayNumberOnlyMessage();
+            backToSeatMenu(sc);
+            return;
+        }
+
+        int flightCode = Integer.parseInt(flightCodeInput);
+
+        // 화면에 표시한 로그인 회원의 예매 항공편인지 확인한다.
+        if (!reservationMap.containsValue(flightCode)) {
+            seatView.displayInvalidReservationFlightMessage();
+            backToSeatMenu(sc);
+            return;
+        }
+
+        // 선택한 예매 항공편의 빈 좌석만 보여준다.
+        List<SeatDTO> seatList =
+                seatController.getAvailableSeatsByFlightCode(flightCode);
         seatView.displayAvailableSeatList(seatList);
 
         if (seatList.isEmpty()) {
