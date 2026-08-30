@@ -116,11 +116,11 @@ public class BaggageService {
      * 수하물 무게 변경 서비스 메서드
      * 수하물번호로 기존 수하물을 찾고, 무게만 수정한다.
      */
-    public boolean updateBaggageWeight(int baggageCode, double baggageWeight) {
+    public boolean updateBaggageWeight(int reservationCode, int baggageCode, double baggageWeight) {
 
         Connection con = getConnection();
 
-        int result = baggageDAO.updateBaggageWeight(con, baggageCode, baggageWeight);
+        int result = baggageDAO.updateBaggageWeight(con, reservationCode, baggageCode, baggageWeight);
 
         // result가 1 이상이면 변경된 행이 있다는 뜻이므로 성공이다.
         if (result > 0) {

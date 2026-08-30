@@ -10,6 +10,9 @@ public class BaggageDTO {
     private int baggageCode; // 수하물번호, PK, tbl_baggage의 baggage_code
     private int reservationCode; // 예매번호, FK, tbl_reservation의 reservation_code와 연결됨
     private double baggageWeight; // 수하물무게, kg 단위, tbl_baggage의 baggage_weight
+    private int memberCode; // 수하물을 등록한 예매의 회원번호
+    private String memberName; // 수하물을 등록한 회원 이름
+    private boolean baggageCarrying; // 예매 시 선택한 수하물 지참 여부
 
     // 값을 나중에 setter로 넣고 싶을 때 사용
     public BaggageDTO() {
@@ -63,6 +66,30 @@ public class BaggageDTO {
         this.baggageWeight = baggageWeight;
     }
 
+    public int getMemberCode() {
+        return memberCode;
+    }
+
+    public void setMemberCode(int memberCode) {
+        this.memberCode = memberCode;
+    }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public boolean isBaggageCarrying() {
+        return baggageCarrying;
+    }
+
+    public void setBaggageCarrying(boolean baggageCarrying) {
+        this.baggageCarrying = baggageCarrying;
+    }
+
     // 객체 안에 들어있는 값을 출력해서 확인할 때 사용
     // 예: System.out.println(baggage); 로 DTO 값을 확인할 수 있음
     @Override
@@ -71,6 +98,9 @@ public class BaggageDTO {
                 "baggageCode=" + baggageCode +
                 ", reservationCode=" + reservationCode +
                 ", baggageWeight=" + baggageWeight +
+                ", memberCode=" + memberCode +
+                ", memberName='" + memberName + '\'' +
+                ", baggageCarrying=" + baggageCarrying +
                 '}';
     }
 }

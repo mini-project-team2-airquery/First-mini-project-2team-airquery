@@ -61,16 +61,20 @@ public class BaggageMenu {
     /*
      * 수하물 조회 메서드
      * 1. 전체 수하물을 먼저 한 번 보여준다.
-     * 2. 예매번호를 입력받는다.
-     * 3. 입력한 예매번호의 수하물만 다시 보여준다.
+     * 2. 로그인 회원이 Y로 신청하고 등록한 수하물을 보여준다.
+     * 3. 로그인 회원의 조회 결과가 없으면 "수하물이 없습니다."를 보여준다.
      */
     private void selectBaggages(Scanner sc, int memberCode) {
+
+        // DB에 등록된 전체 수하물을 먼저 한 번 조회한다.
+        List<BaggageDTO> allBaggageList = baggageController.getAllBaggages();
+        baggageView.displayAllBaggageList(allBaggageList);
 
         // 로그인 회원의 예매 중 수하물 지참 여부가 YES(true)인 수하물만 가져온다.
         List<BaggageDTO> baggageList = baggageController.getBaggagesByMemberCode(memberCode);
 
         // YES인 예매의 수하물이 있으면 목록을, 없으면 "수하물이 없습니다."를 출력한다.
-        baggageView.displayBaggageList(baggageList);
+        baggageView.displayMemberBaggageList(baggageList);
         backToBaggageMenu(sc);
     }
 
@@ -206,21 +210,48 @@ public class BaggageMenu {
             return;
         }
 
-        /*
-         * 예매할 때 수하물 신청을 하지 않았다면 변경할 수하물이 없다.
-         * 그래서 변경이 안된다는 안내 문구를 보여준다.
-         */
+        // 예매할 때 수하물 지참 여부가 NO이면 등록과 변경을 모두 막는다.
         if (!baggageController.isBaggageCarrying(reservationCode)) {
             baggageView.displayNoBaggageCarryingUpdateMessage();
             backToBaggageMenu(sc);
             return;
         }
 
-        /*
-         * 예매할 때 수하물 신청을 했다면 임의로 무게만 바꾸지 않고,
-         * 예매 취소 후 다시 예매를 진행하라는 문구를 보여준다.
-         */
-        baggageView.displayNeedCancelAndReservationAgainMessage();
+        // YES인 예매에 실제로 등록된 수하물을 보여준다.
+        List<BaggageDTO> baggageList = baggageController.getBaggagesByReservationCode(reservationCode);
+        baggageView.displayBaggageList(baggageList);
+
+        if (baggageList.isEmpty()) {
+            backToBaggageMenu(sc);
+            return;
+        }
+
+        baggageView.displayInputBaggageCodeMessage();
+        String baggageCodeInput = sc.nextLine();
+
+        if (!baggageCodeInput.matches("[0-9]+")) {
+            baggageView.displayNumberOnlyMessage();
+            backToBaggageMenu(sc);
+            return;
+        }
+
+        baggageView.displayInputNewBaggageWeightMessage();
+        String baggageWeightInput = sc.nextLine();
+
+        if (!baggageWeightInput.matches("[0-9]+(\\.[0-9]+)?")) {
+            baggageView.displayWeightOnlyMessage();
+            backToBaggageMenu(sc);
+            return;
+        }
+
+        int baggageCode = Integer.parseInt(baggageCodeInput);
+        double baggageWeight = Double.parseDouble(baggageWeightInput);
+
+        // 선택한 예매에 속한 수하물의 무게만 변경한다.
+        boolean isSuccess = baggageController.updateBaggageWeight(
+                reservationCode, baggageCode, baggageWeight
+        );
+        baggageView.displayUpdateBaggageWeightResult(isSuccess);
         backToBaggageMenu(sc);
     }
 

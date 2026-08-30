@@ -30,9 +30,12 @@ public class BaggageDAO {
         // 전체 수하물이 여러 개일 수 있으므로 List에 담는다.
         List<BaggageDTO> baggageList = new ArrayList<>();
 
-        String query = "SELECT baggage_code, reservation_code, baggage_weight " +
-                "FROM tbl_baggage " +
-                "ORDER BY baggage_code";
+        String query = "SELECT b.baggage_code, b.reservation_code, b.baggage_weight, " +
+                "r.member_code, m.member_name, r.baggage_carrying " +
+                "FROM tbl_baggage b " +
+                "JOIN tbl_reservation r ON b.reservation_code = r.reservation_code " +
+                "JOIN tbl_member m ON r.member_code = m.member_code " +
+                "ORDER BY b.baggage_code";
 
         try {
             pstmt = con.prepareStatement(query);
@@ -44,6 +47,9 @@ public class BaggageDAO {
                 baggage.setBaggageCode(rset.getInt("baggage_code"));
                 baggage.setReservationCode(rset.getInt("reservation_code"));
                 baggage.setBaggageWeight(rset.getDouble("baggage_weight"));
+                baggage.setMemberCode(rset.getInt("member_code"));
+                baggage.setMemberName(rset.getString("member_name"));
+                baggage.setBaggageCarrying(rset.getBoolean("baggage_carrying"));
 
                 baggageList.add(baggage);
             }
@@ -67,9 +73,11 @@ public class BaggageDAO {
         ResultSet rset = null;
         List<BaggageDTO> baggageList = new ArrayList<>();
 
-        String query = "SELECT b.baggage_code, b.reservation_code, b.baggage_weight " +
+        String query = "SELECT b.baggage_code, b.reservation_code, b.baggage_weight, " +
+                "r.member_code, m.member_name, r.baggage_carrying " +
                 "FROM tbl_reservation r " +
                 "JOIN tbl_baggage b ON r.reservation_code = b.reservation_code " +
+                "JOIN tbl_member m ON r.member_code = m.member_code " +
                 "WHERE r.member_code = ? " +
                 "AND r.baggage_carrying = true " +
                 "ORDER BY b.baggage_code";
@@ -84,6 +92,9 @@ public class BaggageDAO {
                 baggage.setBaggageCode(rset.getInt("baggage_code"));
                 baggage.setReservationCode(rset.getInt("reservation_code"));
                 baggage.setBaggageWeight(rset.getDouble("baggage_weight"));
+                baggage.setMemberCode(rset.getInt("member_code"));
+                baggage.setMemberName(rset.getString("member_name"));
+                baggage.setBaggageCarrying(rset.getBoolean("baggage_carrying"));
                 baggageList.add(baggage);
             }
         } catch (SQLException e) {
@@ -273,7 +284,8 @@ public class BaggageDAO {
      * 수하물 무게 변경 메서드
      * baggage_code로 수하물을 찾고 baggage_weight 값을 수정한다.
      */
-    public int updateBaggageWeight(Connection con, int baggageCode, double baggageWeight) {
+    public int updateBaggageWeight(Connection con, int reservationCode,
+                                   int baggageCode, double baggageWeight) {
 
         PreparedStatement pstmt = null;
 
@@ -286,7 +298,8 @@ public class BaggageDAO {
          */
         String query = "UPDATE tbl_baggage " +
                 "SET baggage_weight = ? " +
-                "WHERE baggage_code = ?";
+                "WHERE baggage_code = ? " +
+                "AND reservation_code = ?";
 
         try {
             // UPDATE SQL문을 DB에 보낼 준비를 한다.
@@ -297,6 +310,7 @@ public class BaggageDAO {
 
             // 두 번째 ? 에 변경할 수하물번호를 넣는다.
             pstmt.setInt(2, baggageCode);
+            pstmt.setInt(3, reservationCode);
 
             // UPDATE문을 실행한다.
             result = pstmt.executeUpdate();

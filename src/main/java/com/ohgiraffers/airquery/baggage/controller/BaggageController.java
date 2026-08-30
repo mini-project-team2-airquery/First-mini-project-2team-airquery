@@ -54,8 +54,8 @@ public class BaggageController {
 
     // 수하물 무게를 변경한다.
     // 어떤 수하물을 바꿀지 baggageCode로 찾고, baggageWeight로 새 무게를 넘긴다.
-    public boolean updateBaggageWeight(int baggageCode, double baggageWeight) {
+    public boolean updateBaggageWeight(int reservationCode, int baggageCode, double baggageWeight) {
 
-        return baggageService.updateBaggageWeight(baggageCode, baggageWeight);
+        return baggageService.updateBaggageWeight(reservationCode, baggageCode, baggageWeight);
     }
 }
