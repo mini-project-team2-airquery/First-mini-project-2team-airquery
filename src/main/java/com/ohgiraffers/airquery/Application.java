@@ -1,5 +1,6 @@
 package com.ohgiraffers.airquery;
 
+import com.ohgiraffers.airquery.baggage.view.BaggageMenu;
 import com.ohgiraffers.airquery.airline.menu.AirlineMenu;
 import com.ohgiraffers.airquery.flight.view.FlightMenu;
 import com.ohgiraffers.airquery.member.*;
@@ -162,16 +163,20 @@ public class Application {
 
         AirlineMenu airlineMenu = new AirlineMenu();
 
-        if("Admin".equals(loginMember.getMemberAuth())){
+        if ("Admin".equals(loginMember.getMemberAuth())) {
 
-            airlineMenu.displayMenu(sc);
-        } else if("Member".equals(loginMember.getMemberAuth())){
+            airlineMenu.displayAdminMenu(sc);
+
+        } else if ("Member".equals(loginMember.getMemberAuth())) {
+
+            airlineMenu.displayNormalMenu(sc);
 
         } else {
+
             System.out.println("알수없는 회원입니다.");
         }
-
     }
+
 
 
     // ================= 항공편 =================
@@ -203,6 +208,7 @@ public class Application {
             reservationMenu.displayMenu(sc);
         } else if("Member".equals(loginMember.getMemberAuth())){
 
+            reservationMenu.displayMenu(sc);
         } else {
             System.out.println("알수없는 회원입니다.");
         }
@@ -230,30 +236,9 @@ public class Application {
 
     public static void baggageMenu(Scanner sc, MemberDTO loginMember) {
 
-        while (true) {
+        BaggageMenu baggageMenu = new BaggageMenu();
 
-            System.out.println();
-            System.out.println("===== 수하물 메뉴 =====");
-            System.out.println("1. 수하물 기능");
-            System.out.println("9. 메인 메뉴로 돌아가기");
-            System.out.print("메뉴 선택 : ");
-
-            String input = sc.nextLine();
-
-            switch (input) {
-
-                case "1":
-                    System.out.println("수하물 기능 구현 예정");
-                    break;
-
-                case "9":
-                    return;
-
-                default:
-                    System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
-                    break;
-            }
-        }
+        baggageMenu.displayMenu(sc);
     }
 
 
