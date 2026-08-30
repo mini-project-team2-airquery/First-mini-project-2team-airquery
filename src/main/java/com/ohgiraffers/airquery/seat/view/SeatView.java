@@ -3,7 +3,6 @@ package com.ohgiraffers.airquery.seat.view;
 import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /*
  * 좌석 기능에서 사용자에게 보여줄 문구와 목록 출력을 담당한다.
@@ -22,26 +21,6 @@ public class SeatView {
         System.out.println("|  9. 메인 메뉴로 돌아가기                   |");
         System.out.println("+------------------------------------------+");
         System.out.print("  메뉴 선택 > ");
-    }
-
-    // Map의 key는 예매번호, value는 해당 예매의 항공편번호이다.
-    public void displayReservationsWithoutSeat(Map<Integer, Integer> reservationMap) {
-        System.out.println();
-        System.out.println("===== 좌석 선택 가능한 예매 목록 =====");
-
-        for (Map.Entry<Integer, Integer> reservation : reservationMap.entrySet()) {
-            System.out.println("예매번호 : " + reservation.getKey());
-            System.out.println("항공편번호 : " + reservation.getValue());
-            System.out.println("---------------------------------");
-        }
-    }
-
-    public void displayInputReservationCodeMessage() {
-        System.out.print("좌석을 선택할 예매번호를 입력하세요 : ");
-    }
-
-    public void displayInvalidReservationCodeMessage() {
-        System.out.println("선택 가능한 예매번호가 아닙니다.");
     }
 
     // 전체 좌석 목록을 좌석 한 개씩 반복해서 출력한다.
@@ -117,16 +96,12 @@ public class SeatView {
             return "";
         }
 
-        switch (flightClass) {
-            case "FIRST":
-                return "퍼스트";
-            case "BUSINESS":
-                return "비즈니스";
-            case "ECONOMY":
-                return "이코노미";
-            default:
-                return flightClass;
-        }
+        return switch (flightClass) {
+            case "FIRST" -> "퍼스트";
+            case "BUSINESS" -> "비즈니스";
+            case "ECONOMY" -> "이코노미";
+            default -> flightClass;
+        };
     }
 
     // boolean 값을 그대로 출력하지 않고 이해하기 쉬운 문구로 바꾼다.
@@ -189,42 +164,14 @@ public class SeatView {
         }
     }
 
-    public void displayInputUpdateSeatCodeMessage() {
-        System.out.print("변경할 좌석번호를 입력하세요 : ");
-    }
-
     public void displayInputFlightCodeMessage() {
         System.out.print("  항공편번호 > ");
     }
 
-    public void displayInputSeatIdMessage() {
-        System.out.print("좌석식별번호를 입력하세요 : ");
-    }
-
-    public void displayInputFlightClassMessage() {
-        System.out.print("좌석등급을 입력하세요 : ");
-    }
-
-    public void displayInputAdditionalAmountMessage() {
-        System.out.print("추가금액을 입력하세요 : ");
-    }
-
-    public void displayInputReservedMessage() {
-        System.out.print("예약여부를 입력하세요(true/false) : ");
-    }
-
     public void displayNumberOnlyMessage() { System.out.println("숫자만 입력해야 합니다."); }
-
-    public void displayBooleanOnlyMessage() {
-        System.out.println("예약여부는 true 또는 false만 입력해야 합니다.");
-    }
 
     public void displayInvalidMenuMessage() {
         System.out.println("잘못 눌렀습니다. 메뉴로 돌아갑니다.");
-    }
-
-    public void displayNeedReservationFirstMessage() {
-        System.out.println("예매 먼저 진행 후, 좌석 선택해주세요");
     }
 
     public void displayNeedSeatFirstMessage() {

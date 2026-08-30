@@ -83,20 +83,6 @@ public class SeatService {
         return seatList;
     }
 
-    /*
-     * 회원의 예매 중 아직 좌석을 선택하지 않은 예매 목록을 조회하는 메서드
-     */
-    public Map<Integer, Integer> selectReservationsWithoutSeat(int memberCode) {
-
-        Connection con = getConnection();
-
-        Map<Integer, Integer> reservationMap = seatDAO.selectReservationsWithoutSeat(con, memberCode);
-
-        close(con);
-
-        return reservationMap;
-    }
-
     // 예매 테이블은 수정하지 않고 선택 좌석만 예약 상태로 변경한다.
     public boolean reserveSeat(int memberCode, int seatCode) {
         Connection con = getConnection();
@@ -114,53 +100,6 @@ public class SeatService {
 
         close(con);
         return result > 0;
-    }
-
-    /*
-     * 좌석 예약은 두 테이블을 함께 바꾼다.
-     * 1. tbl_seat의 좌석을 예약 상태로 변경
-     * 2. tbl_reservation의 선택 예매에 좌석번호 저장
-     */
-    public boolean reserveSeat(int memberCode, int reservationCode, int seatCode, int flightCode) {
-
-        Connection con = getConnection();
-
-        // 선택 좌석이 같은 항공편의 빈 좌석일 때만 1을 반환한다.
-        int seatResult = seatDAO.reserveSeatForFlight(con, seatCode, flightCode);
-        int reservationResult = 0;
-
-        if (seatResult > 0) {
-            // 좌석 선점에 성공했을 때만 예매 테이블에 좌석번호를 저장한다.
-            reservationResult = seatDAO.updateReservationSeatCode(con, memberCode, reservationCode, seatCode, flightCode);
-        }
-
-        // 두 작업이 모두 성공해야 저장한다. 하나라도 실패하면 두 작업을 모두 되돌린다.
-        if (seatResult > 0 && reservationResult > 0) {
-            String memberName = seatDAO.selectMemberName(con, memberCode);
-            commit(con);
-            reservedSeatMembers.put(seatCode, memberCode);
-            reservedSeatMemberNames.put(seatCode, memberName);
-        } else {
-            rollback(con);
-        }
-
-        close(con);
-
-        return seatResult > 0 && reservationResult > 0;
-    }
-
-    /*
-     * 특정 항공편에 좌석 선택 안 된 예매가 있는지 확인하는 메서드
-     */
-    public boolean hasReservationWithoutSeat(int memberCode, int flightCode) {
-
-        Connection con = getConnection();
-
-        boolean result = seatDAO.hasReservationWithoutSeat(con, memberCode, flightCode);
-
-        close(con);
-
-        return result;
     }
 
     /*

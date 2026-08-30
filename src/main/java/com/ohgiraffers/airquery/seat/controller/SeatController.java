@@ -4,7 +4,6 @@ import com.ohgiraffers.airquery.seat.model.dto.SeatDTO;
 import com.ohgiraffers.airquery.seat.model.service.SeatService;
 
 import java.util.List;
-import java.util.Map;
 
 public class SeatController {
 
@@ -35,27 +34,9 @@ public class SeatController {
         return seatService.selectAvailableSeatsByFlightCode(flightCode);
     }
 
-    // memberCode 회원의 예매 중 좌석번호가 비어 있는 예매를 요청한다.
-    public Map<Integer, Integer> getReservationsWithoutSeat(int memberCode) {
-
-        return seatService.selectReservationsWithoutSeat(memberCode);
-    }
-
     // 예매와 연결하지 않고 좌석번호만으로 빈 좌석을 예약한다.
     public boolean reserveSeat(int memberCode, int seatCode) {
         return seatService.reserveSeat(memberCode, seatCode);
-    }
-
-    // 선택 좌석을 예약 상태로 만들고 해당 회원의 예매에 연결하도록 요청한다.
-    public boolean reserveSeat(int memberCode, int reservationCode, int seatCode, int flightCode) {
-
-        return seatService.reserveSeat(memberCode, reservationCode, seatCode, flightCode);
-    }
-
-    // 해당 회원과 항공편에 좌석 미선택 예매가 있는지 확인한다.
-    public boolean hasReservationWithoutSeat(int memberCode, int flightCode) {
-
-        return seatService.hasReservationWithoutSeat(memberCode, flightCode);
     }
 
     // 해당 회원과 항공편에 좌석 선택 완료 예매가 있는지 확인한다.

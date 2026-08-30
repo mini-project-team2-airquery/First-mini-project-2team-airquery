@@ -253,19 +253,14 @@ public class SeatMenu {
             return "";
         }
 
-        switch (flightClass.trim().toUpperCase()) {
-            case "이코노미":
-            case "ECONOMY":
-                return "ECONOMY";
-            case "비즈니스":
-            case "BUSINESS":
-                return "BUSINESS";
-            case "퍼스트":
-            case "FIRST":
-                return "FIRST";
-            default:
-                return flightClass.trim().toUpperCase();
-        }
+        String normalizedClass = flightClass.trim().toUpperCase();
+
+        return switch (normalizedClass) {
+            case "이코노미", "ECONOMY" -> "ECONOMY";
+            case "비즈니스", "BUSINESS" -> "BUSINESS";
+            case "퍼스트", "FIRST" -> "FIRST";
+            default -> normalizedClass;
+        };
     }
 
     // 결과를 확인한 사용자가 1번을 눌렀을 때 좌석 메뉴로 돌아간다.

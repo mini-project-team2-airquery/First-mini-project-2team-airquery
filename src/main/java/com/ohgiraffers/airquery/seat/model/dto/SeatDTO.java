@@ -1,37 +1,19 @@
 package com.ohgiraffers.airquery.seat.model.dto;
 
-/*
- * tbl_seat 테이블의 좌석 한 행을 Java 객체로 옮겨 담는 클래스이다.
- * DAO가 조회한 값을 setter로 저장하고, Menu/View가 getter로 꺼내 사용한다.
- * DTO는 데이터를 보관만 하며 SQL 실행이나 화면 출력은 하지 않는다.
- */
 public class SeatDTO {
 
-    private int seatCode;          // seat_code: 좌석 데이터의 고유번호(PK)
-    private int flightCode;        // flight_code: 좌석이 속한 항공편번호(FK)
-    private String seatId;         // seat_id: 승객이 보는 좌석명(예: 1A, 10B)
-    private String flightClass;    // flight_class: ECONOMY, BUSINESS, FIRST
-    private int additionalAmount;  // additional_amount: 좌석등급 추가금액
-    private boolean reserved;      // is_reserved: true면 예약됨, false면 예약 가능
-    private int reservedMemberCode; // 프로그램 실행 중 이 좌석을 예약한 회원번호(0이면 확인 불가)
+    private int seatCode; // 좌석번호, PK
+    private int flightCode; // 항공편번호, FK
+    private String seatId; // 좌석식별번호
+    private String flightClass; // 좌석등급 -> 이코노미, 비지니스, 퍼스트
+    private int additionalAmount; // 추가금액 / 기본값은 0으로 나타냄
+    private boolean reserved; // 좌석 선점여부, 예약되었는지 확인하는 값
+    private int reservedMemberCode; // 프로그램 실행 중 이 좌석을 예약한 회원번호
     private String reservedMemberName; // 프로그램 실행 중 이 좌석을 예약한 회원 이름
 
 
-    // DAO가 빈 객체를 만든 후 setter로 값을 하나씩 넣을 때 사용한다.
     public SeatDTO() {
 
-    }
-
-    // 좌석의 모든 값을 한 번에 전달해 객체를 만들 때 사용한다.
-    public SeatDTO(int seatCode, int flightCode, String seatId, String flightClass,
-                   int additionalAmount, boolean reserved) {
-
-        this.seatCode = seatCode;
-        this.flightCode = flightCode;
-        this.seatId = seatId;
-        this.flightClass = flightClass;
-        this.additionalAmount = additionalAmount;
-        this.reserved = reserved;
     }
 
     // seatCode 값을 꺼내는 메서드

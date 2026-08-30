@@ -7,9 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
 
@@ -20,6 +20,8 @@ import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
  * PreparedStatement의 ?에는 setInt 등으로 값을 넣어 SQL Injection을 방지한다.
  */
 public class SeatDAO {
+
+    private static final Logger LOGGER = Logger.getLogger(SeatDAO.class.getName());
     /*
      * 좌석 전체 조회 메서드
      * 좌석 정보를 조회
@@ -57,7 +59,7 @@ public class SeatDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "좌석 전체 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -101,7 +103,7 @@ public class SeatDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "예약 가능 좌석 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -137,7 +139,7 @@ public class SeatDAO {
                 seatList.add(seat);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "항공편 좌석 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -184,55 +186,13 @@ public class SeatDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "항공편의 예약 가능 좌석 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
         }
 
         return seatList;
-    }
-
-    /*
-     * 회원의 예매 중 아직 좌석을 선택하지 않은 예매 목록을 조회하는 메서드
-     * Map의 key는 예매번호, value는 항공편번호이다.
-     */
-    public Map<Integer, Integer> selectReservationsWithoutSeat(Connection con, int memberCode) {
-
-        PreparedStatement pstmt = null;
-        ResultSet rset = null;
-        Map<Integer, Integer> reservationMap = new LinkedHashMap<>();
-
-        // 좌석번호가 NULL인 예매만 좌석 선택 대상으로 보여준다.
-        String query = "SELECT reservation_code, flight_code " +
-                "FROM tbl_reservation " +
-                "WHERE member_code = ? " +
-                "AND seat_code IS NULL " +
-                "ORDER BY reservation_code";
-
-        try {
-            pstmt = con.prepareStatement(query);
-
-            pstmt.setInt(1, memberCode);
-
-            rset = pstmt.executeQuery();
-
-            while (rset.next()) {
-                // 예매번호로 항공편번호를 쉽게 찾을 수 있도록 Map에 저장한다.
-                reservationMap.put(
-                        rset.getInt("reservation_code"),
-                        rset.getInt("flight_code")
-                );
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            close(rset);
-            close(pstmt);
-        }
-
-        return reservationMap;
     }
 
     /*
@@ -270,7 +230,7 @@ public class SeatDAO {
             result = pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "좌석 예약 중 오류가 발생했습니다.", e);
         } finally {
             close(pstmt);
         }
@@ -304,83 +264,8 @@ public class SeatDAO {
             result = pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "항공편 좌석 예약 중 오류가 발생했습니다.", e);
         } finally {
-            close(pstmt);
-        }
-
-        return result;
-    }
-
-    /*
-     * 예매 테이블에 선택한 좌석번호를 넣는 메서드
-     * 같은 항공편 예매 중 seat_code가 비어 있는 예매 하나에 좌석번호를 저장한다.
-     */
-    public int updateReservationSeatCode(Connection con, int memberCode, int reservationCode,
-                                         int seatCode, int flightCode) {
-
-        PreparedStatement pstmt = null;
-        int result = 0;
-
-        // 예매번호, 회원번호, 항공편번호가 모두 일치하고 좌석이 비어 있어야 수정된다.
-        String query = "UPDATE tbl_reservation " +
-                "SET seat_code = ? " +
-                "WHERE reservation_code = ? " +
-                "AND member_code = ? " +
-                "AND flight_code = ? " +
-                "AND seat_code IS NULL";
-
-        try {
-            pstmt = con.prepareStatement(query);
-
-            pstmt.setInt(1, seatCode);
-            pstmt.setInt(2, reservationCode);
-            pstmt.setInt(3, memberCode);
-            pstmt.setInt(4, flightCode);
-
-            result = pstmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            close(pstmt);
-        }
-
-        return result;
-    }
-
-    /*
-     * 특정 항공편에 좌석 선택 안 된 예매가 있는지 확인하는 메서드
-     * tbl_reservation에서 flight_code가 같고 seat_code가 NULL인 예매를 찾는다.
-     */
-    public boolean hasReservationWithoutSeat(Connection con, int memberCode, int flightCode) {
-
-        PreparedStatement pstmt = null;
-        ResultSet rset = null;
-        boolean result = false;
-
-        String query = "SELECT reservation_code " +
-                "FROM tbl_reservation " +
-                "WHERE member_code = ? " +
-                "AND flight_code = ? " +
-                "AND seat_code IS NULL";
-
-        try {
-            pstmt = con.prepareStatement(query);
-
-            pstmt.setInt(1, memberCode);
-            pstmt.setInt(2, flightCode);
-
-            rset = pstmt.executeQuery();
-
-            if (rset.next()) {
-                result = true;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            close(rset);
             close(pstmt);
         }
 
@@ -416,7 +301,7 @@ public class SeatDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "좌석 선택 예매 확인 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -456,7 +341,7 @@ public class SeatDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "현재 좌석번호 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -491,7 +376,7 @@ public class SeatDAO {
             result = pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "예매 좌석 변경 중 오류가 발생했습니다.", e);
         } finally {
             close(pstmt);
         }
@@ -520,7 +405,7 @@ public class SeatDAO {
             result = pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "기존 좌석 해제 중 오류가 발생했습니다.", e);
         } finally {
             close(pstmt);
         }
@@ -556,7 +441,7 @@ public class SeatDAO {
                 flightClass = rset.getString("flight_class");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "현재 좌석등급 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -587,7 +472,7 @@ public class SeatDAO {
                 flightClass = rset.getString("flight_class");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "예약 가능 좌석등급 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -613,7 +498,7 @@ public class SeatDAO {
                 memberName = rset.getString("member_name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "회원 이름 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
