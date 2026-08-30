@@ -237,7 +237,7 @@ public class Application {
 
         BaggageMenu baggageMenu = new BaggageMenu();
 
-        baggageMenu.displayMenu(sc);
+        baggageMenu.displayMenu(sc, loginMember.getMemberCode());
     }
 
 

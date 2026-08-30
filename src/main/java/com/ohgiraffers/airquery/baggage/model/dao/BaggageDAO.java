@@ -59,6 +59,44 @@ public class BaggageDAO {
     }
 
     /*
+     * 로그인 회원의 예매와 수하물을 연결해서 조회한다.
+     * baggage_carrying=true인 예매만 가져오므로 NO로 선택한 예매는 결과에 포함되지 않는다.
+     */
+    public List<BaggageDTO> selectBaggagesByMemberCode(Connection con, int memberCode) {
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        List<BaggageDTO> baggageList = new ArrayList<>();
+
+        String query = "SELECT b.baggage_code, b.reservation_code, b.baggage_weight " +
+                "FROM tbl_reservation r " +
+                "JOIN tbl_baggage b ON r.reservation_code = b.reservation_code " +
+                "WHERE r.member_code = ? " +
+                "AND r.baggage_carrying = true " +
+                "ORDER BY b.baggage_code";
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, memberCode);
+            rset = pstmt.executeQuery();
+
+            while (rset.next()) {
+                BaggageDTO baggage = new BaggageDTO();
+                baggage.setBaggageCode(rset.getInt("baggage_code"));
+                baggage.setReservationCode(rset.getInt("reservation_code"));
+                baggage.setBaggageWeight(rset.getDouble("baggage_weight"));
+                baggageList.add(baggage);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return baggageList;
+    }
+
+    /*
      * 예매 존재 여부 확인 메서드
      * tbl_reservation에 사용자가 입력한 reservation_code가 있는지 확인한다.
      */

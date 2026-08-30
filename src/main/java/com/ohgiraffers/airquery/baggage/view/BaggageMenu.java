@@ -20,7 +20,7 @@ public class BaggageMenu {
     private final BaggageView baggageView = new BaggageView();
 
     // 수하물 메뉴를 계속 보여주는 메서드
-    public void displayMenu(Scanner sc) {
+    public void displayMenu(Scanner sc, int memberCode) {
 
         // 9번을 누르기 전까지 수하물 메뉴를 반복해서 보여준다.
         while (true) {
@@ -38,8 +38,8 @@ public class BaggageMenu {
                     break;
 
                 case "2":
-                    // 수하물 조회 기능 실행
-                    selectBaggages(sc);
+                    // 로그인한 회원의 예매에 연결된 수하물만 조회한다.
+                    selectBaggages(sc, memberCode);
                     break;
 
                 case "3":
@@ -64,16 +64,14 @@ public class BaggageMenu {
      * 2. 예매번호를 입력받는다.
      * 3. 입력한 예매번호의 수하물만 다시 보여준다.
      */
-    private void selectBaggages(Scanner sc) {
+    private void selectBaggages(Scanner sc, int memberCode) {
 
-        // 전체 수하물 목록을 먼저 조회한다.
-        List<BaggageDTO> allBaggageList = baggageController.getAllBaggages();
+        // 로그인 회원의 예매 중 수하물 지참 여부가 YES(true)인 수하물만 가져온다.
+        List<BaggageDTO> baggageList = baggageController.getBaggagesByMemberCode(memberCode);
 
-        // 전체 수하물 목록을 화면에 출력한다.
-        baggageView.displayBaggageList(allBaggageList);
-
-        // 전체 조회 후 예매번호를 입력받아 특정 예매의 수하물만 조회한다.
-        selectBaggagesByReservationCode(sc);
+        // YES인 예매의 수하물이 있으면 목록을, 없으면 "수하물이 없습니다."를 출력한다.
+        baggageView.displayBaggageList(baggageList);
+        backToBaggageMenu(sc);
     }
 
     // 예매번호를 입력받아 해당 예매의 수하물을 조회하는 메서드

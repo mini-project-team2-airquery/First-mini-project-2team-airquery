@@ -35,6 +35,14 @@ public class BaggageService {
         return baggageList;
     }
 
+    // 로그인 회원이 예매할 때 수하물 지참 여부를 YES로 선택한 내역만 조회한다.
+    public List<BaggageDTO> selectBaggagesByMemberCode(int memberCode) {
+        Connection con = getConnection();
+        List<BaggageDTO> baggageList = baggageDAO.selectBaggagesByMemberCode(con, memberCode);
+        close(con);
+        return baggageList;
+    }
+
     /*
      * 예매 존재 여부 확인 서비스 메서드
      * 수하물 조회 전에 예매내역이 있는지 먼저 확인할 때 사용한다.

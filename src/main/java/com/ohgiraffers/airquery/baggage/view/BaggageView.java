@@ -27,7 +27,7 @@ public class BaggageView {
 
         // 조회 결과가 비어 있으면 아래 반복문을 실행하지 않고 바로 끝낸다.
         if (baggageList.isEmpty()) {
-            System.out.println("조회된 수하물이 없습니다.");
+            System.out.println("수하물이 없습니다.");
             return;
         }
 
