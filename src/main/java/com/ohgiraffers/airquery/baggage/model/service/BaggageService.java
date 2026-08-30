@@ -95,7 +95,7 @@ public class BaggageService {
 
         close(con);
 
-        // 성공이면 true, 실패면 false를 돌려준다.
+        // 성공이면 true, 실패면 false를 돌려준다
         return result > 0;
     }
 

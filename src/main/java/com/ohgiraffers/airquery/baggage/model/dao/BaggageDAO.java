@@ -215,10 +215,12 @@ public class BaggageDAO {
 
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "예매별 수하물 조회 중 오류가 발생했습니다.", e);
+
         } finally {
             // ResultSet과 PreparedStatement는 사용 후 닫아야 한다.
             close(rset);
             close(pstmt);
+
         }
 
         // 조회된 수하물 목록을 Service로 돌려준다.

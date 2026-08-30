@@ -16,7 +16,7 @@ public class BaggageController {
         return baggageService.selectAllBaggages();
     }
 
-    // 로그인한 회원이 YES로 신청한 예매의 수하물만 조회한다.
+    // 로그인한 회원이 YES로 신청한 예매의 수하물만 조회한다
     public List<BaggageDTO> getBaggagesByMemberCode(int memberCode) {
         return baggageService.selectBaggagesByMemberCode(memberCode);
     }

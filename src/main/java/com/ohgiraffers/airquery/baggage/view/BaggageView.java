@@ -131,7 +131,7 @@ public class BaggageView {
         if (isSuccess) {
             System.out.println("[성공] 수하물 무게 변경이 완료되었습니다.");
         } else {
-            System.out.println("[실패] 해당 예매의 수하물번호인지 확인해주세요.");
+            System.out.println("[실패] 해당 예매의 수하물번호인지 확인해주세요");
         }
     }
 

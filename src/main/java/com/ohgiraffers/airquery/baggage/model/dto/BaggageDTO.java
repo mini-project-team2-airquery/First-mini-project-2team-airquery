@@ -92,5 +92,6 @@ public class BaggageDTO {
                 ", memberName='" + memberName + '\'' +
                 ", baggageCarrying=" + baggageCarrying +
                 '}';
+
     }
 }

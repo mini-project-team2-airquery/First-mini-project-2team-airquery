@@ -88,6 +88,7 @@ public class BaggageMenu {
          * 없는 예매번호라면 수하물을 등록할 수 없다.
          */
         if (baggageController.isReservationMissing(reservationCode)) {
+
             baggageView.displayNoReservationMessage();
             backToBaggageMenu(sc);
             return;
@@ -98,6 +99,7 @@ public class BaggageMenu {
          * 이 경우에는 수하물 등록을 진행하지 않고 안내 문구만 보여준다.
          */
         if (baggageController.isBaggageNotCarried(reservationCode)) {
+
             baggageView.displayNoBaggageCarryingMessage();
             backToBaggageMenu(sc);
             return;
@@ -108,6 +110,7 @@ public class BaggageMenu {
 
         // 수하물무게는 15 또는 15.5처럼 숫자와 소수점만 가능하다.
         if (!baggageWeightInput.matches(WEIGHT_PATTERN)) {
+
             baggageView.displayWeightOnlyMessage();
             backToBaggageMenu(sc);
             return;
@@ -135,6 +138,7 @@ public class BaggageMenu {
 
         // 예매번호는 숫자만 입력 가능하다.
         if (!reservationCodeInput.matches(NUMBER_PATTERN)) {
+
             baggageView.displayNumberOnlyMessage();
             backToBaggageMenu(sc);
             return;
