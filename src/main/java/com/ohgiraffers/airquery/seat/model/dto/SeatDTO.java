@@ -66,15 +66,12 @@ public class SeatDTO {
         this.additionalAmount = additionalAmount;
     }
 
-    // reserved 값을 꺼내는 메서드
-    // 좌석이 예약되었는지 아닌지를 의마함
+    // reserved 값을 꺼내는 메서드, 좌석이 예약되었는지 아닌지를 의마함
     public boolean isReserved() {
         return reserved;
     }
 
-    // reserved 값을 꺼내는 메서드
-    // true를 넣으면 예약됨
-    // false 넣으면 예약이 안됨
+    // reserved 값을 꺼내는 메서드, true를 넣으면 예약됨, false 넣으면 예약이 안됨
     public void setReserved(boolean reserved) {
         this.reserved = reserved;
     }
