@@ -19,13 +19,9 @@ public class PaymentMenu {
     private final ResultView reservationResultView = new ResultView();
     private final ReservationController reservationController = new ReservationController();
 
-    public void displayMenu(Scanner sc) {
+    public void displayMenu(Scanner sc, int memberCode) {
 
         System.out.println("============== 결제 메뉴 ===============");
-
-        System.out.println("현재 로그인한 회원 번호를 입력해주세요: ");
-        int memberCode = sc.nextInt();
-        sc.nextLine();
 
         while(true) {
 

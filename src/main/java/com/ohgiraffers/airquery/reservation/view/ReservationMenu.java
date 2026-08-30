@@ -21,15 +21,9 @@ public class ReservationMenu {
 
     private final FlightMenu flightMenu = new FlightMenu();
 
-    public void displayMenu(Scanner sc) {
+    public void displayMenu(Scanner sc, int memberCode) {
 
         System.out.println("=================== 예매 관리 화면 ===================");
-
-        System.out.println("현재 로그인한 회원 번호를 입력해주세요: ");
-        int memberCode = sc.nextInt();
-        sc.nextLine();
-        
-        // 진짜 존재하는 회원 번호인지 체크 필요하긴 함
 
         while(true) {
 
