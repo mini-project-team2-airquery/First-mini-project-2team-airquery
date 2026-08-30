@@ -67,6 +67,35 @@ public class PaymentDAO {
         return payment;
     }
 
+    /* 해당 예매에 결제 이력이 이미 존재하는지 확인 (reservation_code는 UNIQUE라 평생 최대 1건) */
+    public boolean existsPayment(Connection con, int reservationCode) {
+
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean exists = false;
+
+        String query = "SELECT payment_code FROM tbl_payment WHERE reservation_code = ?";
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, reservationCode);
+            rs = pstmt.executeQuery();
+            exists = rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rs);
+            close(pstmt);
+        }
+
+        return exists;
+    }
+
+    /*
+     * 결제 등록
+     * tbl_payment.reservation_code는 UNIQUE라서 같은 예매로는 새 row를 또 넣을 수 없다.
+     * 이미 결제 이력(취소/환불 포함)이 있는 예매면 그 row를 그대로 갱신해서 재결제 처리한다.
+     */
     public int insertPayment(Connection con, PaymentDTO payment) {
 
         PreparedStatement pstmt = null;
@@ -78,19 +107,35 @@ public class PaymentDAO {
                 "VALUES (?, ?, ?, ?)" +
                 "";
 
+        String updateQuery = "" +
+                "UPDATE tbl_payment SET " +
+                "payment_amount = ?, payment_method = ?, refund_status = ? " +
+                "WHERE reservation_code = ?" +
+                "";
+
         // 총 결제 금액 계산 = 좌석 추가 금액 + 티켓 가격 (default 금액은 0원)
         int paymentAmount = getPaymentAmount(con, payment.getReservationCode());
 
         try {
 
-            pstmt = con.prepareStatement(insertQuery);
+            if (existsPayment(con, payment.getReservationCode())) {
 
-            pstmt.setInt(1, payment.getReservationCode());
-            pstmt.setInt(2, paymentAmount);
-            pstmt.setString(3, payment.getPaymentMethod());
-            pstmt.setBoolean(4, payment.isRefundStatus());
+                pstmt = con.prepareStatement(updateQuery);
+                pstmt.setInt(1, paymentAmount);
+                pstmt.setString(2, payment.getPaymentMethod());
+                pstmt.setBoolean(3, payment.isRefundStatus());
+                pstmt.setInt(4, payment.getReservationCode());
 
-            rs =  pstmt.executeUpdate();
+            } else {
+
+                pstmt = con.prepareStatement(insertQuery);
+                pstmt.setInt(1, payment.getReservationCode());
+                pstmt.setInt(2, paymentAmount);
+                pstmt.setString(3, payment.getPaymentMethod());
+                pstmt.setBoolean(4, payment.isRefundStatus());
+            }
+
+            rs = pstmt.executeUpdate();
         } catch(SQLException e) {
             e.printStackTrace();
         } finally {
