@@ -83,12 +83,19 @@ public class SeatService {
         return seatList;
     }
 
-    // 예매 테이블은 수정하지 않고 선택 좌석만 예약 상태로 변경한다.
+    // 좌석 예약 상태와 로그인 회원의 예매 좌석번호를 하나의 트랜잭션으로 저장한다.
     public boolean reserveSeat(int memberCode, int seatCode) {
         Connection con = getConnection();
-        int result = seatDAO.reserveSeat(con, seatCode);
+        int seatResult = seatDAO.reserveSeat(con, seatCode);
+        int reservationResult = 0;
 
-        if (result > 0) {
+        if (seatResult > 0) {
+            // 선택 좌석과 같은 항공편의 로그인 회원 예매에 seat_code를 저장한다.
+            reservationResult = seatDAO.updateMemberReservationSeat(con, memberCode, seatCode);
+        }
+
+        // 좌석 예약과 예매 연결이 모두 성공해야 DB에 확정한다.
+        if (seatResult > 0 && reservationResult > 0) {
             // 로그인 회원번호로 이름을 조회하여 좌석 조회 화면에 함께 표시한다.
             String memberName = seatDAO.selectMemberName(con, memberCode);
             commit(con);
@@ -99,7 +106,7 @@ public class SeatService {
         }
 
         close(con);
-        return result > 0;
+        return seatResult > 0 && reservationResult > 0;
     }
 
     /*

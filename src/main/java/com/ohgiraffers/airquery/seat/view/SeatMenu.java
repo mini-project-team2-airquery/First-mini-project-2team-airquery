@@ -113,10 +113,7 @@ public class SeatMenu {
         }
     }
 
-    /*
-     * 예매와 관계없이 빈 좌석을 직접 예약한다.
-     * tbl_seat의 is_reserved만 true로 변경하며 tbl_reservation에는 연결하지 않는다.
-     */
+    /* 빈 좌석을 예약하고 로그인 회원의 해당 항공편 예매에 좌석번호를 연결한다. */
     private void reserveSeat(Scanner sc, int memberCode) {
 
         List<SeatDTO> seatList = seatController.getAvailableSeats();

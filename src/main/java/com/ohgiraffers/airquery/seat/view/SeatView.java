@@ -160,7 +160,7 @@ public class SeatView {
         if (isSuccess) {
             System.out.println("[성공] 좌석 예약이 완료되었습니다.");
         } else {
-            System.out.println("[실패] 이미 예약된 좌석이거나 존재하지 않는 좌석입니다.");
+            System.out.println("[실패] 해당 항공편의 예매가 없거나 이미 예약된 좌석입니다.");
         }
     }
 

@@ -239,6 +239,45 @@ public class SeatDAO {
     }
 
     /*
+     * 선택한 좌석과 같은 항공편의 로그인 회원 예매에 seat_code를 저장한다.
+     * 좌석을 아직 선택하지 않은 정상 예매 한 건만 연결 대상으로 사용한다.
+     */
+    public int updateMemberReservationSeat(Connection con, int memberCode, int seatCode) {
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        String query = "UPDATE tbl_reservation " +
+                "SET seat_code = ? " +
+                "WHERE reservation_code = (" +
+                "SELECT reservation_code FROM (" +
+                "SELECT r.reservation_code " +
+                "FROM tbl_reservation r " +
+                "JOIN tbl_seat s ON r.flight_code = s.flight_code " +
+                "WHERE r.member_code = ? " +
+                "AND s.seat_code = ? " +
+                "AND r.seat_code IS NULL " +
+                "AND r.is_deleted = false " +
+                "ORDER BY r.reservation_code " +
+                "LIMIT 1" +
+                ") target_reservation" +
+                ")";
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, seatCode);
+            pstmt.setInt(2, memberCode);
+            pstmt.setInt(3, seatCode);
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "예매 좌석번호 저장 중 오류가 발생했습니다.", e);
+        } finally {
+            close(pstmt);
+        }
+
+        return result;
+    }
+
+    /*
      * 예매 등록에서 사용하는 좌석 예약 메서드
      * 선택한 좌석이 선택한 항공편의 좌석이고, 아직 예약되지 않은 경우에만 예약한다.
      */
