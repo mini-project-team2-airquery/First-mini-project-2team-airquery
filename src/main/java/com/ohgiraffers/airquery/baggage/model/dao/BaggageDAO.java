@@ -8,20 +8,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.ohgiraffers.airquery.common.JDBCTemplate.close;
 
-/*
- * DAO(Data Access Object)
- * DB와 직접 대화하는 클래스이다.
- * SELECT, INSERT, UPDATE 같은 SQL문은 이 클래스에서 실행한다.
- */
+
 public class BaggageDAO {
 
-    /*
-     * 수하물 전체 조회 메서드
-     * 수하물 조회 메뉴에 들어갔을 때 전체 수하물을 먼저 보여주기 위해 사용한다.
-     */
+    private static final Logger LOGGER = Logger.getLogger(BaggageDAO.class.getName());
+
+    // 수하물 전체 조회 메서드, 수하물 조회 메뉴에 들어갔을 때 전체 수하물을 먼저 보여주기 위해 사용한다.
     public List<BaggageDTO> selectAllBaggages(Connection con) {
 
         PreparedStatement pstmt = null;
@@ -30,9 +27,12 @@ public class BaggageDAO {
         // 전체 수하물이 여러 개일 수 있으므로 List에 담는다.
         List<BaggageDTO> baggageList = new ArrayList<>();
 
-        String query = "SELECT baggage_code, reservation_code, baggage_weight " +
-                "FROM tbl_baggage " +
-                "ORDER BY baggage_code";
+        String query = "SELECT b.baggage_code, b.reservation_code, b.baggage_weight, " +
+                "r.member_code, m.member_name, r.baggage_carrying " +
+                "FROM tbl_baggage b " +
+                "JOIN tbl_reservation r ON b.reservation_code = r.reservation_code " +
+                "JOIN tbl_member m ON r.member_code = m.member_code " +
+                "ORDER BY b.baggage_code";
 
         try {
             pstmt = con.prepareStatement(query);
@@ -44,12 +44,15 @@ public class BaggageDAO {
                 baggage.setBaggageCode(rset.getInt("baggage_code"));
                 baggage.setReservationCode(rset.getInt("reservation_code"));
                 baggage.setBaggageWeight(rset.getDouble("baggage_weight"));
+                baggage.setMemberCode(rset.getInt("member_code"));
+                baggage.setMemberName(rset.getString("member_name"));
+                baggage.setBaggageCarrying(rset.getBoolean("baggage_carrying"));
 
                 baggageList.add(baggage);
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "전체 수하물 조회 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -58,10 +61,47 @@ public class BaggageDAO {
         return baggageList;
     }
 
-    /*
-     * 예매 존재 여부 확인 메서드
-     * tbl_reservation에 사용자가 입력한 reservation_code가 있는지 확인한다.
-     */
+    // 로그인 회원의 예매와 수하물을 연결해서 조회한다.
+    public List<BaggageDTO> selectBaggagesByMemberCode(Connection con, int memberCode) {
+        PreparedStatement pstmt = null;
+        ResultSet rset = null;
+        List<BaggageDTO> baggageList = new ArrayList<>();
+
+        String query = "SELECT b.baggage_code, b.reservation_code, b.baggage_weight, " +
+                "r.member_code, m.member_name, r.baggage_carrying " +
+                "FROM tbl_reservation r " +
+                "JOIN tbl_baggage b ON r.reservation_code = b.reservation_code " +
+                "JOIN tbl_member m ON r.member_code = m.member_code " +
+                "WHERE r.member_code = ? " +
+                "AND r.baggage_carrying = true " +
+                "ORDER BY b.baggage_code";
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, memberCode);
+            rset = pstmt.executeQuery();
+
+            while (rset.next()) {
+                BaggageDTO baggage = new BaggageDTO();
+                baggage.setBaggageCode(rset.getInt("baggage_code"));
+                baggage.setReservationCode(rset.getInt("reservation_code"));
+                baggage.setBaggageWeight(rset.getDouble("baggage_weight"));
+                baggage.setMemberCode(rset.getInt("member_code"));
+                baggage.setMemberName(rset.getString("member_name"));
+                baggage.setBaggageCarrying(rset.getBoolean("baggage_carrying"));
+                baggageList.add(baggage);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "회원 수하물 조회 중 오류가 발생했습니다.", e);
+        } finally {
+            close(rset);
+            close(pstmt);
+        }
+
+        return baggageList;
+    }
+
+    // 예매 존재 여부 확인 메서드
     public boolean existsReservation(Connection con, int reservationCode) {
 
         PreparedStatement pstmt = null;
@@ -86,7 +126,7 @@ public class BaggageDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "예매 존재 여부 확인 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -95,10 +135,7 @@ public class BaggageDAO {
         return isExist;
     }
 
-    /*
-     * 예매 시 수하물을 신청했는지 확인하는 메서드
-     * tbl_reservation의 baggage_carrying 값이 true이면 수하물 신청을 한 예매이다.
-     */
+    // 예매 시 수하물을 신청했는지 확인하는 메서드
     public boolean isBaggageCarrying(Connection con, int reservationCode) {
 
         PreparedStatement pstmt = null;
@@ -126,7 +163,7 @@ public class BaggageDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "수하물 지참 여부 확인 중 오류가 발생했습니다.", e);
         } finally {
             close(rset);
             close(pstmt);
@@ -135,10 +172,7 @@ public class BaggageDAO {
         return isBaggageCarrying;
     }
 
-    /*
-     * 예매번호로 수하물 조회 메서드
-     * 사용자가 입력한 reservation_code와 연결된 수하물만 가져온다.
-     */
+    // 예매번호로 수하물 조회 메서드
     public List<BaggageDTO> selectBaggagesByReservationCode(Connection con, int reservationCode) {
 
         PreparedStatement pstmt = null;
@@ -180,21 +214,20 @@ public class BaggageDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "예매별 수하물 조회 중 오류가 발생했습니다.", e);
+
         } finally {
             // ResultSet과 PreparedStatement는 사용 후 닫아야 한다.
             close(rset);
             close(pstmt);
+
         }
 
         // 조회된 수하물 목록을 Service로 돌려준다.
         return baggageList;
     }
 
-    /*
-     * 수하물 등록 메서드
-     * 예매번호와 수하물 무게를 DB에 새로 저장한다.
-     */
+    // 수하물 등록 메서드
     public int insertBaggage(Connection con, BaggageDTO baggage) {
 
         PreparedStatement pstmt = null;
@@ -223,7 +256,7 @@ public class BaggageDAO {
             result = pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "수하물 등록 중 오류가 발생했습니다.", e);
         } finally {
             close(pstmt);
         }
@@ -231,11 +264,9 @@ public class BaggageDAO {
         return result;
     }
 
-    /*
-     * 수하물 무게 변경 메서드
-     * baggage_code로 수하물을 찾고 baggage_weight 값을 수정한다.
-     */
-    public int updateBaggageWeight(Connection con, int baggageCode, double baggageWeight) {
+    // 수하물 무게 변경 메서드
+    public int updateBaggageWeight(Connection con, int reservationCode,
+                                   int baggageCode, double baggageWeight) {
 
         PreparedStatement pstmt = null;
 
@@ -248,7 +279,8 @@ public class BaggageDAO {
          */
         String query = "UPDATE tbl_baggage " +
                 "SET baggage_weight = ? " +
-                "WHERE baggage_code = ?";
+                "WHERE baggage_code = ? " +
+                "AND reservation_code = ?";
 
         try {
             // UPDATE SQL문을 DB에 보낼 준비를 한다.
@@ -259,12 +291,13 @@ public class BaggageDAO {
 
             // 두 번째 ? 에 변경할 수하물번호를 넣는다.
             pstmt.setInt(2, baggageCode);
+            pstmt.setInt(3, reservationCode);
 
             // UPDATE문을 실행한다.
             result = pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "수하물 무게 변경 중 오류가 발생했습니다.", e);
         } finally {
             close(pstmt);
         }

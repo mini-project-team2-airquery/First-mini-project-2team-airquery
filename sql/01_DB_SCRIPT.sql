@@ -78,6 +78,7 @@ CREATE TABLE tbl_reservation
     flight_code       INT     NOT NULL COMMENT '항공편번호',
     seat_code         INT              COMMENT '좌석번호',
     baggage_carrying  BOOLEAN NOT NULL COMMENT '수하물지여부',
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE COMMENT '예매삭제여부',
     first_created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '예매일자',
     last_modified_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종수정일',
     CONSTRAINT pk_reservation_code PRIMARY KEY (reservation_code),
@@ -264,12 +265,7 @@ VALUES
     (7, 7, '12D', 'ECONOMY',       0, TRUE),
     (8, 8, '15A', 'ECONOMY',       0, TRUE),
     (9, 9, '3A',  'BUSINESS', 500000, TRUE),
-    (10, 10, '18F', 'ECONOMY',     0, FALSE),
-    (11, 1, '1B',  'FIRST',    2000000, FALSE),
-    (12, 2, '2B',  'BUSINESS', 500000, FALSE),
-    (13, 3, '10B', 'ECONOMY',       0, FALSE),
-    (14, 4, '10C', 'ECONOMY',       0, FALSE),
-    (15, 5, '5B',  'BUSINESS', 500000, FALSE);
+    (10, 10, '18F', 'ECONOMY',     0, TRUE);
 
 
 -- =====================================================
