@@ -14,8 +14,8 @@ public class ReservationDetailDTO {
     private int flightCode;                         // 항공편번호
     private LocalDateTime reservationCreatedDate;   // 예매날짜
     private LocalDateTime reservationUpdatedDate;   // 최종수정일
+    private boolean baggageCarrying;                // 수하물 지참 여부
     private boolean isDeleted;                      // 취소여부
-
     // 항공편
     private int ticketPrice;                        // 항공편 티켓 가격
 
@@ -38,6 +38,14 @@ public class ReservationDetailDTO {
     private double baggageWeight;   // 수하물 무게
 
     private List<BaggageDTO> baggageList;
+
+    public boolean isBaggageCarrying() {
+        return baggageCarrying;
+    }
+
+    public void setBaggageCarrying(boolean baggageCarrying) {
+        this.baggageCarrying = baggageCarrying;
+    }
 
     public boolean isDeleted() {
         return isDeleted;
@@ -201,6 +209,8 @@ public class ReservationDetailDTO {
         dto.setFlightCode(r.getFlightCode());
         dto.setReservationCreatedDate(r.getCreatedAt());
         dto.setReservationUpdatedDate(r.getUpdatedAt());
+        dto.setBaggageCarrying(r.isBaggageCarrying());
+        dto.setDeleted(r.isDeleted());
 
         // 결제 정보
         if (p != null) {

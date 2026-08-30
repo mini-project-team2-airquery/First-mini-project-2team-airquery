@@ -205,10 +205,10 @@ public class Application {
 
         if("Admin".equals(loginMember.getMemberAuth())){
 
-            reservationMenu.displayMenu(sc);
+            //reservationMenu.displayMenu(sc);
         } else if("Member".equals(loginMember.getMemberAuth())){
 
-            reservationMenu.displayMenu(sc);
+            reservationMenu.displayMenu(sc, loginMember.getMemberCode());
         } else {
             System.out.println("알수없는 회원입니다.");
         }
@@ -223,9 +223,10 @@ public class Application {
 
         if("Admin".equals(loginMember.getMemberAuth())){
 
-            paymentMenu.displayMenu(sc);
+            //paymentMenu.displayMenu(sc);
         } else if("Member".equals(loginMember.getMemberAuth())){
 
+            paymentMenu.displayMenu(sc, loginMember.getMemberCode());
         } else {
             System.out.println("알수없는 회원입니다.");
         }

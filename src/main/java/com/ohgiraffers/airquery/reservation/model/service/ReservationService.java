@@ -68,7 +68,7 @@ public class ReservationService {
 
         // 수하물, 좌석 정보 같이 조회
         Map<String, Object> otherInfo =
-                reservationDAO.getSeatAndBaggageInfoOfReservation(con, reservationCode);
+                reservationDAO.getSeatAndBaggageInfoOfReservation(con, reservationCode, reservation.isBaggageCarrying());
 
         close(con);
 
@@ -79,22 +79,26 @@ public class ReservationService {
     }
 
     /* 예매 등록 */
-    public int registerReservation(ReservationDTO dto) {
+    public ReservationDTO registerReservation(ReservationDTO dto) {
 
         Connection con = getConnection();
 
         int result = reservationDAO.insertReservation(con, dto);
 
+        ReservationDTO savedReservation = null;
+
         // 성공하면 트랜잭션 커밋
         if (result == 1) {
             commit(con);
+            // 예매번호, 예매일시 등 DB에서 채워진 값까지 포함해서 다시 조회
+            savedReservation = reservationDAO.findByMemberAndFlight(con, dto.getMemberCode(), dto.getFlightCode());
         } else {
             rollback(con);
         }
 
         close(con);
 
-        return result;
+        return savedReservation;
     }
 
     /* 예매 취소 */
@@ -119,4 +123,60 @@ public class ReservationService {
         return result;
     }
 
+    /* 예매 변경 */
+    // case 1. 좌석 등급 변경 시, 기존 결제 정보 취소 후 재결제 (기존 항공편 티켓가격 + 변경된 좌석의 추가 금액으로 재결제)
+    /*
+        case 2. 수하물 지참 여부 변경
+        1. N -> Y: 그냥 변경
+        2. Y -> N: 기존 수하물이 있는 경우, 예외처리. 취소 후 재예매 안내 문구 출력
+    */
+    // case 3. 항공편 번호 변경 시, 취소 후 재예매 안내 문구 출력
+
+    /* 특정 항공편의 예약 가능한 다른 등급의 좌석 목록 조회 */
+    public List<SeatDTO> selectAvailableOtherClassSeats(int flightCode, String currentFightClass) {
+
+        Connection con = getConnection();
+
+        List<SeatDTO> seatList = reservationDAO.getAvailableOtherClassByFlightCode(con, flightCode, currentFightClass);
+
+        close(con);
+
+        return seatList;
+    }
+
+    public int changeSeatClass(int oldSeatCode, int newSeatCode, int flightCode, int reservationCode) {
+
+        Connection con = getConnection();
+
+        int result = reservationDAO.updateSeatClass(con,  oldSeatCode, newSeatCode, flightCode, reservationCode);
+
+        // 성공하면 트랜잭션 커밋
+        if (result == 1) {
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result;
+    }
+
+    public int changeBaggageCarrying(int reservationCode, boolean baggageCarrying) {
+
+        Connection con = getConnection();
+
+        int result = reservationDAO.updateBaggageCarrying(con, reservationCode, baggageCarrying);
+
+        // 성공하면 트랜잭션 커밋
+        if (result == 1) {
+            commit(con);
+        } else {
+            rollback(con);
+        }
+
+        close(con);
+
+        return result;
+    }
 }
