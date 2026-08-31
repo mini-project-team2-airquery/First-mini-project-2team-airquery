@@ -71,7 +71,7 @@ src/main/java/com/ohgiraffers/airquery/
 | --- | --- |
 | `00_AIRQUERY_DATABASE.sql` | `airquerydb` 데이터베이스 생성, `ohgiraffers` 계정 생성 및 권한 부여 |
 | `01_DB_SCRIPT.sql` | 7개 테이블 DROP/CREATE + 회원 10건 · 항공사 10건 · 항공편 10건 · 좌석 10건 · 예매 10건 · 수하물 10건 · 결제 10건 더미 데이터 INSERT |
-| `02_MODIFY_CONSTRAINT.sql` | 제약조건 수정 |
+| `02_MODIFY_CONSTRAINT.sql` | tbl_reservation에 is_deleted 필드 추가 |
 
 ### ERD 개요
 
