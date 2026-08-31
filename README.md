@@ -78,7 +78,7 @@ src/main/java/com/ohgiraffers/airquery/
 ```
 tbl_member ──< tbl_reservation >── tbl_flight ──< tbl_seat
                      │                                │
-                     │(1:1)                           │(1:N, FK)
+                     │(1:1)                           │(1:1, FK)
                      ▼                                ▼
                 tbl_payment                    (tbl_reservation.seat_code)
                      
